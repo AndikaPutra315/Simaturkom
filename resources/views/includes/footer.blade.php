@@ -85,7 +85,7 @@
         text-align: center;
         font-size: 0.9rem;
         color: #adb5bd;
-        margin: 0; /* Hapus margin default dari paragraf */
+        margin: 0;
     }
 
     @media (max-width: 768px) {

@@ -62,10 +62,10 @@
 
         /* BAGIAN KONTEN DUMMY BARU */
         .content-section {
-            max-width: 900px; /* Batasi lebar konten agar nyaman dibaca */
-            margin: 40px auto; /* Memberi jarak atas/bawah dan menengahkan */
+            max-width: 900px;
+            margin: 40px auto;
             padding: 20px;
-            line-height: 1.6; /* Jarak antar baris */
+            line-height: 1.6;
         }
         .content-section h2 {
             font-family: 'Montserrat', sans-serif;
