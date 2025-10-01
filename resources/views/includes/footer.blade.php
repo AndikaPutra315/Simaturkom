@@ -3,7 +3,7 @@
         background-color: #ffffff;
         color: #333;
         font-family: sans-serif;
-        padding-top: 40px; /* Hanya beri padding atas, hapus padding kiri-kanan */
+        padding-top: 40px; 
         border-top: 1px solid #e0e0e0;
     }
 
