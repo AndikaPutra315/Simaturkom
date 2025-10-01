@@ -13,7 +13,7 @@
         display: flex;
         justify-content: space-between;
         gap: 40px;
-        padding: 0 20px; /* Pindahkan padding kiri-kanan ke sini */
+        padding: 0 20px; 
     }
 
     .footer-column {
