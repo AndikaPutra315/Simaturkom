@@ -20,4 +20,12 @@ class HomeController extends Controller
         // Memanggil view 'home.blade.php' dan mengirim data
         return view('home', $data);
     }
+    public function dataMenara()
+    {
+        return view('datamenara');
+    }
+    public function regulasi()
+    {
+        return view('regulasi');
+    }
 }
