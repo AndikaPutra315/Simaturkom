@@ -2,49 +2,43 @@
     /* Basic Styling untuk Header */
     .header-nav {
         background-color: #ffffff;
-        padding: 0.75rem 2rem; /* Sedikit mengurangi padding vertikal agar tidak terlalu tinggi */
+        padding: 0.75rem 2rem;
         border-bottom: 1px solid #e7e7e7;
         display: flex;
-        justify-content: space-between; /* Mendorong item ke ujung kiri dan kanan */
-        align-items: center; /* Menyelaraskan semua item secara vertikal di tengah */
+        justify-content: space-between;
+        align-items: center;
         font-family: sans-serif;
     }
 
-    /* BARU: Kontainer untuk semua item di sisi kiri (logo + nama) */
     .header-left {
         display: flex;
         align-items: center;
     }
 
-    /* BARU: Grup untuk tiga logo */
     .logo-group {
         display: flex;
         align-items: center;
-        border-right: 2px solid #e0e0e0; /* Garis pemisah */
-        padding-right: 20px; /* Jarak dari garis pemisah */
-        margin-right: 20px; /* Jarak ke tulisan "simartukom" */
+        border-right: 2px solid #e0e0e0;
+        padding-right: 20px;
+        margin-right: 20px;
     }
 
-    /* BARU: Aturan untuk setiap logo di dalam grup */
     .logo-group img {
-        height: 45px; /* KETINGGIAN SERAGAM UNTUK SEMUA LOGO */
-        width: auto;  /* Lebar menyesuaikan agar proporsional */
-        margin-right: 15px; /* Jarak antar logo */
+        height: 45px;
+        width: auto;
+        margin-right: 15px;
     }
 
-    /* Menghapus margin-right pada logo terakhir di grup */
     .logo-group img:last-child {
         margin-right: 0;
     }
 
-    /* Styling untuk tulisan "simartukom" */
     .site-name {
         font-size: 1.5rem;
         font-weight: bold;
         color: #333;
     }
 
-    /* Styling untuk menu navigasi (tidak berubah) */
     .header-menu {
         list-style-type: none;
         margin: 0;
@@ -86,13 +80,14 @@
         </div>
 
         <ul class="header-menu">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">Hotspot</a></li>
-            <li><a href="#">Regulasi</a></li>
-            <li><a href="#">Peta Tower</a></li>
-            <li><a href="#">Data Menara</a></li>
-            <li><a href="#">Peta Zona</a></li>
-            <li><a href="#">Statistik</a></li>
+            {{-- Menggunakan Request::is() untuk mengecek URL aktif --}}
+            <li><a href="{{ url('/') }}" class="{{ Request::is('/') ? 'active' : '' }}">Home</a></li>
+            <li><a href="#" class="{{ Request::is('hotspot') ? 'active' : '' }}">Hotspot</a></li>
+            <li><a href="{{ route('regulasi') }}" class="{{ Request::routeIs('regulasi') ? 'active' : '' }}">Regulasi</a></li>
+            <li><a href="#" class="{{ Request::is('peta-tower') ? 'active' : '' }}">Peta Tower</a></li>
+            <li><a href="{{ url('/data-menara') }}" class="{{ Request::is('data-menara') ? 'active' : '' }}">Data Menara</a></li>
+            <li><a href="#" class="{{ Request::is('peta-zona') ? 'active' : '' }}">Peta Zona</a></li>
+            <li><a href="#" class="{{ Request::is('statistik') ? 'active' : '' }}">Statistik</a></li>
         </ul>
     </nav>
 </header>
