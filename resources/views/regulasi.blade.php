@@ -51,9 +51,13 @@
                         <div class="card-body">
                             <h5 class="card-title">Permen No. 5 Tahun 2013</h5>
                         </div>
-                        <div class="card-footer">
+                        {{-- PERUBAHAN: Menambahkan display flex dan gap agar tombol sejajar --}}
+                        <div class="card-footer d-flex gap-2">
                             <a href="{{ asset('pdf/2013permen5..pdf') }}" class="btn btn-outline-primary w-100" download>
-                                <i class="fas fa-download me-2"></i> Download File
+                                <i class="fas fa-download me-2"></i> Download
+                            </a>
+                            <a href="{{ asset('pdf/2013permen5..pdf') }}" class="btn btn-outline-success w-100" target="_blank">
+                                <i class="fas fa-eye me-2"></i> Lihat
                             </a>
                         </div>
                     </div>
@@ -64,9 +68,12 @@
                         <div class="card-body">
                             <h5 class="card-title">Telecommunications Operations</h5>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer d-flex gap-2">
                             <a href="{{ asset('pdf/Telecommunications_Operations.pdf') }}" class="btn btn-outline-primary w-100" download>
-                                <i class="fas fa-download me-2"></i> Download File
+                                <i class="fas fa-download me-2"></i> Download
+                            </a>
+                            <a href="{{ asset('pdf/Telecommunications_Operations.pdf') }}" class="btn btn-outline-success w-100" target="_blank">
+                                <i class="fas fa-eye me-2"></i> Lihat
                             </a>
                         </div>
                     </div>
@@ -77,9 +84,12 @@
                         <div class="card-body">
                             <h5 class="card-title">Penyelenggaraan Jaringan Telekomunikasi</h5>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer d-flex gap-2">
                             <a href="{{ asset('pdf/Penyelenggaraan_Jaringan_Telekomunikasi.pdf') }}" class="btn btn-outline-primary w-100" download>
-                                <i class="fas fa-download me-2"></i> Download File
+                                <i class="fas fa-download me-2"></i> Download
+                            </a>
+                            <a href="{{ asset('pdf/Penyelenggaraan_Jaringan_Telekomunikasi.pdf') }}" class="btn btn-outline-success w-100" target="_blank">
+                                <i class="fas fa-eye me-2"></i> Lihat
                             </a>
                         </div>
                     </div>

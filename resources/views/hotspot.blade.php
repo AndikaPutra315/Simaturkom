@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,10 +25,12 @@
             flex-direction: column;
             min-height: 100vh;
         }
+
         main {
             flex: 1;
             padding: 40px 0;
         }
+
         .container {
             max-width: 1600px;
             margin: 0 auto;
@@ -48,12 +51,14 @@
             padding: 25px 30px;
             border-bottom: 1px solid #eef2f9;
         }
+
         .card-header h1 {
             margin: 0;
             font-size: 1.75rem;
             font-weight: 600;
             color: #1a237e;
         }
+
         .card-header p {
             margin: 5px 0 0 0;
             color: #66789a;
@@ -68,6 +73,7 @@
             border-bottom: 1px solid #eef2f9;
             padding: 0 30px;
         }
+
         .tab-link {
             padding: 15px 25px;
             cursor: pointer;
@@ -77,9 +83,11 @@
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
         }
+
         .tab-link:hover {
             color: #1a237e;
         }
+
         .tab-link.active {
             color: #1a237e;
             border-bottom-color: #1a237e;
@@ -97,11 +105,14 @@
             padding: 20px 30px;
             gap: 15px;
         }
+
         .filter-group {
             display: flex;
             gap: 15px;
         }
-        .filter-group select, .search-input input {
+
+        .filter-group select,
+        .search-input input {
             padding: 10px 15px;
             border: 1px solid #dcdfe6;
             border-radius: 6px;
@@ -109,6 +120,7 @@
             font-size: 0.9rem;
             background-color: #fdfdfd;
         }
+
         .action-buttons button {
             padding: 10px 20px;
             border: none;
@@ -120,20 +132,25 @@
             transition: all 0.3s ease;
             margin-left: 10px;
         }
+
         .btn-refresh {
             background-color: #1a237e;
             color: white;
         }
+
         .btn-refresh:hover {
             background-color: #151c68;
         }
+
         .btn-pdf {
             background-color: #c82333;
             color: white;
         }
+
         .btn-pdf:hover {
             background-color: #a21b29;
         }
+
         .action-buttons i {
             margin-right: 8px;
         }
@@ -145,34 +162,43 @@
             width: 100%;
             overflow-x: auto;
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
             white-space: nowrap;
         }
-        .data-table th, .data-table td {
+
+        .data-table th,
+        .data-table td {
             padding: 15px 20px;
             text-align: left;
             font-size: 0.9rem;
         }
+
         .data-table thead {
             background-color: #f8f9fc;
         }
+
         .data-table th {
             font-weight: 600;
             color: #33425e;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .data-table tbody tr {
             border-bottom: 1px solid #eef2f9;
         }
+
         .data-table tbody tr:last-child {
             border-bottom: none;
         }
+
         .data-table tbody tr:hover {
             background-color: #f4f7fc;
         }
+
         .status-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -181,10 +207,12 @@
             font-size: 0.8rem;
             text-transform: capitalize;
         }
+
         .status-aktif {
             background-color: #e7f5e8;
             color: #28a745;
         }
+
         .status-nonaktif {
             background-color: #f8d7da;
             color: #721c24;
@@ -200,10 +228,12 @@
             padding: 20px 30px;
             border-top: 1px solid #eef2f9;
         }
+
         .entries-info {
             color: #66789a;
             font-size: 0.9rem;
         }
+
         .pagination-nav ul {
             list-style-type: none;
             margin: 0;
@@ -211,6 +241,7 @@
             display: flex;
             gap: 5px;
         }
+
         .pagination-nav a {
             display: block;
             padding: 8px 14px;
@@ -221,10 +252,12 @@
             border-radius: 6px;
             transition: all 0.3s ease;
         }
+
         .pagination-nav a:hover {
             background-color: #f4f7fc;
             border-color: #b8c1d3;
         }
+
         .pagination-nav li.active a {
             background-color: #1a237e;
             color: white;
@@ -240,6 +273,7 @@
         }
     </style>
 </head>
+
 <body>
 
     @include('includes.header')
@@ -253,8 +287,10 @@
                 </div>
 
                 <div class="tabs-container">
-                    <a href="{{ route('hotspot.index', ['kategori' => 'skpd']) }}" class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
-                    <a href="{{ route('hotspot.index', ['kategori' => 'free']) }}" class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Hotspot Free</a>
+                    <a href="{{ route('hotspot.index', ['kategori' => 'skpd']) }}"
+                        class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
+                    <a href="{{ route('hotspot.index', ['kategori' => 'free']) }}"
+                        class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Hotspot Free</a>
                 </div>
 
                 <div class="toolbar">
@@ -272,7 +308,7 @@
                         </select>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button id="refresh-button" class="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
                         <button class="btn-pdf"><i class="fas fa-file-pdf"></i> Generate PDF</button>
                     </div>
                 </div>
@@ -334,7 +370,16 @@
         </div>
     </main>
 
+    <script>
+        const refreshButton = document.getElementById('refresh-button');
+        refreshButton.addEventListener('click', function() {
+            console.log('Tombol refresh diklik!');
+            location.reload();
+        });
+    </script>
+
     @include('includes.footer')
 
 </body>
+
 </html>

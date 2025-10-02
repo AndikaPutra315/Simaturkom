@@ -243,7 +243,7 @@
                         </select>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button id="refresh-button" class="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
                         <button class="btn-pdf"><i class="fas fa-file-pdf"></i> Generate PDF</button>
                     </div>
                 </div>
@@ -314,7 +314,6 @@
                                 <td><span class="status-badge status-aktif">aktif</span></td>
                                 <td>71</td>
                             </tr>
-                            {{-- Akhir dari contoh data --}}
                         </tbody>
                     </table>
                 </div>
@@ -338,6 +337,14 @@
             </div>
         </div>
     </main>
+
+    <script>
+        const refreshButton = document.getElementById('refresh-button');
+        refreshButton.addEventListener('click', function() {
+            console.log('Tombol refresh diklik!');
+            location.reload();
+        });
+    </script>
 
     @include('includes.footer')
 
