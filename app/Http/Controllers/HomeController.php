@@ -24,4 +24,8 @@ class HomeController extends Controller
     {
         return view('datamenara');
     }
+    public function regulasi()
+    {
+        return view('regulasi');
+    }
 }
