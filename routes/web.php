@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 
 // --- Rute Halaman Utama ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/datamenara', [HomeController::class, 'dataMenara'])->name('datamenara');
+Route::get('/data-menara', [HomeController::class, 'dataMenara']);
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 
