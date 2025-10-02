@@ -8,4 +8,7 @@ Route::get('/', function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('/data-menara', [HomeController::class, 'dataMenara']);
+
+Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
