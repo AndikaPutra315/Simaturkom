@@ -87,7 +87,7 @@
             <li><a href="#" class="{{ Request::is('peta-tower') ? 'active' : '' }}">Peta Tower</a></li>
             <li><a href="{{ url('/data-menara') }}" class="{{ Request::is('data-menara') ? 'active' : '' }}">Data Menara</a></li>
             <li><a href="#" class="{{ Request::is('peta-zona') ? 'active' : '' }}">Peta Zona</a></li>
-            <li><a href="#" class="{{ Request::is('statistik') ? 'active' : '' }}">Statistik</a></li>
+            <li><a href="{{ url('/#data-infrastruktur') }}" class="{{ Request::is('statistik') ? 'active' : '' }}">Statistik</a></li>
         </ul>
     </nav>
 </header>
