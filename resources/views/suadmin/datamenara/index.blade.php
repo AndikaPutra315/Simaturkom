@@ -29,6 +29,7 @@
         .data-table tbody tr:hover { background-color: #f4f7fc; }
         .status-badge { display: inline-block; padding: 5px 12px; border-radius: 15px; font-weight: 500; font-size: 0.8rem; text-transform: capitalize; }
         .status-aktif { background-color: #e7f5e8; color: #28a745; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
         .table-footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-top: 1px solid #eef2f9; }
         .entries-info { color: #66789a; font-size: 0.9rem; }
     </style>
@@ -72,8 +73,13 @@
                             <tr>
                                 <th>Kode</th>
                                 <th>Provider</th>
+                                <th>Kelurahan</th>
                                 <th>Kecamatan</th>
                                 <th>Alamat</th>
+                                <th>Longitude</th>
+                                <th>Latitude</th>
+                                <th>Tipe Ukuran</th>
+                                <th>Tinggi Tower</th>
                                 <th>Status</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
@@ -83,9 +89,20 @@
                                 <tr>
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->provider }}</td>
+                                    <td>{{ $item->kelurahan }}</td>
                                     <td>{{ $item->kecamatan }}</td>
                                     <td style="white-space: normal; min-width: 250px;">{{ $item->alamat }}</td>
-                                    <td><span class="status-badge status-aktif">{{ $item->status }}</span></td>
+                                    <td>{{ $item->longitude }}</td>
+                                    <td>{{ $item->latitude }}</td>
+                                    <td>{{ $item->tipe_ukuran }}</td>
+                                    <td>{{ $item->tinggi_tower }} m</td>
+                                    <td>
+                                        @if (strtolower($item->status) == 'aktif')
+                                            <span class="status-badge status-aktif">Aktif</span>
+                                        @else
+                                            <span class="status-badge status-nonaktif">Nonaktif</span>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ route('suadmin.datamenara.edit', $item->id) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Data">
                                             <i class="fas fa-edit"></i>
@@ -101,7 +118,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-5">
+                                    <td colspan="11" class="text-center py-5">
                                         <h5>Data Tidak Ditemukan</h5>
                                         <p>Coba ubah filter Anda atau <a href="{{ route('suadmin.datamenara.create') }}">tambahkan data baru</a>.</p>
                                     </td>
