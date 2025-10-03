@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-
+use App\Http\Controllers\SuAdmin\DataMenaraController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,14 +16,13 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 
 // --- Rute Halaman Utama ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/data-menara', [HomeController::class, 'dataMenara']);
+Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara'); // URL diperbaiki (tanpa strip)
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 
 
 // --- Rute Autentikasi ---
 Route::get('/wadai', [LoginController::class, 'showLoginForm'])->name('login');
-// URL di bawah ini diubah dari '/login' menjadi '/wadai' agar cocok
 Route::post('/wadai', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -35,3 +34,8 @@ Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequest
 Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(function () {
+
+    Route::resource('datamenara', DataMenaraController::class);
+    });

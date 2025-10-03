@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\DataMenara; // <-- IMPORT MODEL DATA MENARA
 
 class HomeController extends Controller
 {
@@ -11,19 +12,28 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Data yang ingin dikirim ke view (opsional)
         $data = [
             'title' => 'Selamat Datang!',
             'description' => 'Ini adalah halaman utama website yang dibuat dengan Laravel.'
         ];
-
-        // Memanggil view 'home.blade.php' dan mengirim data
         return view('home', $data);
     }
+
+    /**
+     * Menampilkan halaman data menara dengan data dari database.
+     */
     public function dataMenara()
     {
-        return view('datamenara');
+        // Ambil data dari database dengan paginasi (10 data per halaman)
+        $menaraData = DataMenara::paginate(10);
+
+        // Kirim data ke view
+        return view('datamenara', ['menaraData' => $menaraData]);
     }
+
+    /**
+     * Menampilkan halaman regulasi.
+     */
     public function regulasi()
     {
         return view('regulasi');

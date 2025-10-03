@@ -15,7 +15,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/'; // Arahkan ke halaman home setelah login
+    protected $redirectTo = '/suadmin/datamenara';
 
     /**
      * Create a new controller instance.
@@ -24,7 +24,6 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        // Perbaiki ejaan di baris ini
         $this->middleware('guest')->except('logout');
     }
 
@@ -41,10 +40,8 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        // Ambil input dari form
         $credentials = $request->only('email', 'password');
 
-        // Logika hardcode untuk admin
         if ($credentials['email'] === 'admin' && $credentials['password'] === 'admin') {
 
             $request->session()->put('loggedInAsAdmin', true);
@@ -52,7 +49,6 @@ class LoginController extends Controller
             return redirect()->intended($this->redirectTo);
         }
 
-        // Jika gagal, kembali ke halaman sebelumnya dengan pesan error
         return back()->withErrors([
             'email' => 'ID atau Password yang Anda masukkan salah.',
         ]);

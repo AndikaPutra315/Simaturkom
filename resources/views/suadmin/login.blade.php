@@ -13,7 +13,6 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            /* Latar belakang gradien dengan pola garis halus */
             background-color: #eef2f9;
             background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
@@ -29,12 +28,11 @@
         .login-logo {
             display: block;
             margin: 0 auto 30px auto;
-            height: 60px; /* Atur tinggi logo */
+            height: 60px;
         }
         .login-card {
             border: none;
             border-radius: 1rem;
-            /* Efek kaca buram (frosted glass) */
             background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             box-shadow: 0 1rem 3rem rgba(0,0,0,.1)!important;
