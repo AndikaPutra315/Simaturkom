@@ -3,7 +3,7 @@
         background-color: #ffffff;
         color: #333;
         font-family: sans-serif;
-        padding-top: 40px; 
+        padding-top: 40px;
         border-top: 1px solid #e0e0e0;
     }
 
@@ -13,7 +13,7 @@
         display: flex;
         justify-content: space-between;
         gap: 40px;
-        padding: 0 20px; 
+        padding: 0 20px;
     }
 
     .footer-column {
@@ -109,7 +109,7 @@
             <div class="contact-info">
                 <div class="contact-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>Jl. Pangeran Antasari No. 1, Tanjung, Kabupaten Tabalong, Kalimantan Selatan</span>
+                    <span>R9PM+92H, Jl. Cempaka, Tanjung, Kec. Tj., Kabupaten Tabalong, Kalimantan Selatan 71513</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-phone"></i>
@@ -127,10 +127,10 @@
 
             <h3 style="margin-top: 30px;">SOSIAL MEDIA</h3>
             <div class="social-media-links">
-                <a href="#"><i class="fab fa-facebook"></i> FB Media Center</a>
-                <a href="#"><i class="fab fa-twitter-square"></i> X Media Center</a>
-                <a href="#"><i class="fab fa-instagram-square"></i> IG Media Center</a>
-                <a href="#"><i class="fab fa-youtube"></i> YT TV Tabalong</a>
+                <a href="https://facebook.com/mctabalong" target="_blank"><i class="fab fa-facebook"></i> FB Media Center</a>
+                <a href="https://x.com/mc_tabalong" target="_blank"><i class="fab fa-twitter-square"></i> X Media Center</a>
+                <a href="https://www.instagram.com/mc_tabalong?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><i class="fab fa-instagram-square"></i> IG Media Center</a>
+                <a href="https://youtube.com/@diskominfo_tabalong?si=BM9C5dmNUxi8FZyu" target="_blank"><i class="fab fa-youtube"></i> YT Diskominfo Tabalong</a>
             </div>
         </div>
     </div>
