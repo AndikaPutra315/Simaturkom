@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,9 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* =================================
-           Reset dan Pengaturan Dasar
-           ================================= */
+
         html {
             scroll-behavior: smooth;
         }
@@ -34,9 +33,7 @@
             padding: 0 20px;
         }
 
-        /* =================================
-           Reusable Component: Section Title
-           ================================= */
+
         .section-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 2.25rem;
@@ -53,9 +50,6 @@
             margin: 0 auto 40px auto;
         }
 
-        /* =================================
-           Hero Section (DIPERBARUI)
-           ================================= */
         .hero-container {
             background-image: linear-gradient(rgba(26, 35, 126, 0.7), rgba(63, 81, 181, 0.7)), url("{{ asset('images/bg-home.png') }}");
             background-size: cover;
@@ -64,14 +58,14 @@
             color: #ffffff;
             text-align: center;
             position: relative;
-            
+
             /* BARU: Membuat section setinggi layar penuh dan menengahkan konten */
-            height: 100vh; /* Set tinggi 100% dari tinggi viewport/layar */
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0 2rem; /* Menghapus padding vertikal, karena sudah diatur oleh flexbox */
+            padding: 0 2rem;
         }
         .hero-title {
             font-family: 'Montserrat', sans-serif;
@@ -216,7 +210,7 @@
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
         }
-        
+
         /* Styling untuk Filter Dropdown */
         .chart-filters {
             display: grid;
@@ -284,7 +278,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="data-infrastruktur" class="stats-and-chart-section">
             <div class="container">
                 <h2 class="section-title">Data Infrastruktur</h2>
@@ -336,7 +330,7 @@
         </section>
 
     </main>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
@@ -350,14 +344,14 @@
                 },
                 koneksi: {
                     labels: ['3G', '4G', '5G'],
-                    data: [50, 85, 18] 
+                    data: [50, 85, 18]
                 },
                 operator: {
                     labels: ['Telkomsel', 'Indosat', 'XL Axiata', 'Smartfren'],
                     data: [95, 40, 35, 15]
                 }
             };
-            
+
             Chart.register(ChartDataLabels);
 
             // --- Inisialisasi Chart ---
@@ -365,7 +359,7 @@
             const towerChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: chartData.pemilik.labels, 
+                    labels: chartData.pemilik.labels,
                     datasets: [{
                         label: 'Jumlah',
                         data: chartData.pemilik.data,
@@ -378,13 +372,13 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { 
-                        y: { 
+                    scales: {
+                        y: {
                             beginAtZero: true,
-                            grace: '10%' 
-                        } 
+                            grace: '10%'
+                        }
                     },
-                    plugins: { 
+                    plugins: {
                         legend: { display: false },
                         datalabels: {
                             anchor: 'end',
@@ -410,13 +404,13 @@
             const kecamatanFilter = document.getElementById('kecamatanFilter');
             const kategoriFilter = document.getElementById('kategoriFilter');
 
-            let activeChartType = 'pemilik'; 
+            let activeChartType = 'pemilik';
 
             function updateChart() {
                 const newData = chartData[activeChartType];
-                
+
                 console.log(`Updating chart for: ${activeChartType}, Kecamatan: ${kecamatanFilter.value}, Kategori: ${kategoriFilter.value}`);
-                
+
                 towerChart.data.labels = newData.labels;
                 towerChart.data.datasets[0].data = newData.data;
                 towerChart.update();
@@ -437,7 +431,7 @@
             kategoriFilter.addEventListener('change', updateChart);
         });
     </script>
-    
+
     @include('includes.footer')
 
 </body>
