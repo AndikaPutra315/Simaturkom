@@ -39,6 +39,11 @@
         color: #333;
     }
 
+    /* BARU: Menghapus dekorasi default dari link */
+    .site-name-link {
+        text-decoration: none;
+    }
+
     .header-menu {
         list-style-type: none;
         margin: 0;
@@ -75,8 +80,9 @@
                 <img src="{{ asset('images/logosmart.png') }}" alt="Logo Smart City">
             </div>
 
-            <span class="site-name">SIMATURKOM</span>
-
+            <a href="{{ url('/') }}" class="site-name-link">
+                <span class="site-name">SIMATURKOM</span>
+            </a>
         </div>
 
         <ul class="header-menu">

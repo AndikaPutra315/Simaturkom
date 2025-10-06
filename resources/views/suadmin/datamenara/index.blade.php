@@ -18,8 +18,30 @@
         .card-header h1 { margin: 0; font-size: 1.75rem; font-weight: 600; color: #1a237e; }
         .card-header p { margin: 5px 0 0 0; color: #66789a; font-size: 0.95rem; }
         .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 20px 30px; gap: 15px; }
-        .filter-group { display: flex; gap: 15px; }
+        .filter-group { display: flex; gap: 15px; align-items: center; }
         .filter-group select { padding: 10px 15px; border: 1px solid #dcdfe6; border-radius: 6px; font-size: 0.9rem; }
+        .action-buttons { display: flex; gap: 10px; align-items: center; }
+        /* Styling baru untuk tombol agar mirip dengan halaman publik */
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-custom i { margin-right: 8px; }
+        .btn-refresh { background-color: #1a237e; color: white; }
+        .btn-refresh:hover { background-color: #151c68; color: white; }
+        .btn-pdf { background-color: #c82333; color: white; }
+        .btn-pdf:hover { background-color: #a21b29; color: white; }
+        .btn-add { background-color: #0d6efd; color: white; }
+        .btn-add:hover { background-color: #0b5ed7; color: white; }
+
         .table-responsive { width: 100%; overflow-x: auto; }
         .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
         .data-table th, .data-table td { padding: 15px 20px; text-align: left; font-size: 0.9rem; vertical-align: middle; }
@@ -45,27 +67,34 @@
                     <p>Tambah, edit, atau hapus data menara telekomunikasi di Kabupaten Tabalong.</p>
                 </div>
 
-                <form action="{{ route('suadmin.datamenara.index') }}" method="GET">
-                    <div class="toolbar">
-                        <div class="filter-group">
-                            <select name="provider" onchange="this.form.submit()">
-                                <option value="">Semua Provider</option>
-                                @foreach ($providers as $provider)
-                                    <option value="{{ $provider->provider }}" @if(request('provider') == $provider->provider) selected @endif>{{ $provider->provider }}</option>
-                                @endforeach
-                            </select>
-                            <select name="kecamatan" onchange="this.form.submit()">
-                                <option value="">Semua Kecamatan</option>
-                                @foreach ($kecamatans as $kecamatan)
-                                    <option value="{{ $kecamatan->kecamatan }}" @if(request('kecamatan') == $kecamatan->kecamatan) selected @endif>{{ $kecamatan->kecamatan }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <a href="{{ route('suadmin.datamenara.create') }}" class="btn btn-primary fw-bold">
-                            <i class="fas fa-plus me-2"></i>Tambah Data Baru
+                <div class="toolbar">
+                    <form action="{{ route('suadmin.datamenara.index') }}" method="GET" class="filter-group">
+                        <select name="provider" onchange="this.form.submit()">
+                            <option value="">Semua Provider</option>
+                            @foreach ($providers as $provider)
+                                <option value="{{ $provider->provider }}" @if(request('provider') == $provider->provider) selected @endif>{{ $provider->provider }}</option>
+                            @endforeach
+                        </select>
+                        <select name="kecamatan" onchange="this.form.submit()">
+                            <option value="">Semua Kecamatan</option>
+                            @foreach ($kecamatans as $kecamatan)
+                                <option value="{{ $kecamatan->kecamatan }}" @if(request('kecamatan') == $kecamatan->kecamatan) selected @endif>{{ $kecamatan->kecamatan }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                    
+                    <div class="action-buttons">
+                        <a href="{{ route('suadmin.datamenara.index') }}" class="btn-custom btn-refresh">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </a>
+                        <button type="button" class="btn-custom btn-pdf">
+                            <i class="fas fa-file-pdf"></i> Generate PDF
+                        </button>
+                        <a href="{{ route('suadmin.datamenara.create') }}" class="btn-custom btn-add">
+                            <i class="fas fa-plus"></i>Tambah Data
                         </a>
                     </div>
-                </form>
+                </div>
 
                 <div class="table-responsive">
                     <table class="data-table">
