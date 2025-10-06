@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -58,8 +57,6 @@
             color: #ffffff;
             text-align: center;
             position: relative;
-
-            /* BARU: Membuat section setinggi layar penuh dan menengahkan konten */
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -83,9 +80,46 @@
             margin-top: 0;
         }
 
-        /* =================================
-           Bagian Konten - Tentang Sistem
-           ================================= */
+        .hero-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 20px auto 30px auto;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .hero-button {
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .btn-primary-custom {
+            background-color: #ffab00;
+            color: #1a237e;
+        }
+        .btn-primary-custom:hover {
+            background-color: #ffd600;
+            transform: translateY(-3px);
+        }
+        .btn-secondary-custom {
+            background-color: transparent;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+        .btn-secondary-custom:hover {
+            background-color: #ffffff;
+            color: #1a237e;
+            transform: translateY(-3px);
+        }
+
         .content-section {
             padding: 60px 0;
             background-color: #ffffff;
@@ -99,9 +133,6 @@
             margin: 0 auto 20px auto;
         }
 
-        /* =================================
-           Fitur Utama Section
-           ================================= */
         .features-section {
             padding: 60px 0;
             background-color: #f4f7fc;
@@ -142,9 +173,6 @@
             color: #666;
         }
 
-        /* =================================
-           Statistik dan Chart Section
-           ================================= */
         .stats-and-chart-section {
             padding: 60px 0;
             background-color: #ffffff;
@@ -186,8 +214,6 @@
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-
-        /* Styling untuk Tab Filter Chart */
         .chart-tabs {
             display: flex;
             border-bottom: 1px solid #dee2e6;
@@ -210,8 +236,6 @@
             border-top-left-radius: 6px;
             border-top-right-radius: 6px;
         }
-
-        /* Styling untuk Filter Dropdown */
         .chart-filters {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -227,7 +251,6 @@
             font-size: 0.9rem;
             background-color: #fdfdfd;
         }
-
     </style>
 </head>
 <body>
@@ -239,6 +262,13 @@
             <div class="container">
                 <h1 class="hero-title">SIMATURKOM</h1>
                 <p class="hero-subtitle">Sistem Informasi Manajemen Infrastruktur Komunikasi</p>
+                <p class="hero-description">
+                    Platform terpusat untuk visualisasi, pengelolaan, dan analisis data menara telekomunikasi serta infrastruktur jaringan di Kabupaten Tabalong.
+                </p>
+                <div class="hero-actions">
+                    <a href="#data-infrastruktur" class="hero-button btn-primary-custom">Lihat Data</a>
+                    <a href="#" class="hero-button btn-secondary-custom">Jelajahi Peta</a>
+                </div>
             </div>
         </section>
 
@@ -336,7 +366,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // --- DATA CONTOH UNTUK SEMUA CHART ---
             const chartData = {
                 pemilik: {
                     labels: ['Protelindo', 'Dayamitra', 'Tower Bersama', 'Centratama'],
@@ -354,7 +383,6 @@
 
             Chart.register(ChartDataLabels);
 
-            // --- Inisialisasi Chart ---
             const ctx = document.getElementById('towerChart').getContext('2d');
             const towerChart = new Chart(ctx, {
                 type: 'bar',
@@ -399,7 +427,6 @@
                 }
             });
 
-            // --- Logika untuk mengelola chart ---
             const tabs = document.querySelectorAll('.chart-tab-item');
             const kecamatanFilter = document.getElementById('kecamatanFilter');
             const kategoriFilter = document.getElementById('kategoriFilter');
@@ -408,15 +435,12 @@
 
             function updateChart() {
                 const newData = chartData[activeChartType];
-
                 console.log(`Updating chart for: ${activeChartType}, Kecamatan: ${kecamatanFilter.value}, Kategori: ${kategoriFilter.value}`);
-
                 towerChart.data.labels = newData.labels;
                 towerChart.data.datasets[0].data = newData.data;
                 towerChart.update();
             }
 
-            // Event listener untuk Tabs
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
                     tabs.forEach(item => item.classList.remove('active'));
@@ -426,7 +450,6 @@
                 });
             });
 
-            // Event listener untuk Filter
             kecamatanFilter.addEventListener('change', updateChart);
             kategoriFilter.addEventListener('change', updateChart);
         });
