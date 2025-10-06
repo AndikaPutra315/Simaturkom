@@ -13,11 +13,9 @@
         /* =================================
            Reset dan Pengaturan Dasar
            ================================= */
-
         html {
             scroll-behavior: smooth;
         }
-
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -59,17 +57,28 @@
            Hero Section (DIPERBARUI)
            ================================= */
         .hero-container {
-            background: linear-gradient(135deg, #1a237e 0%, #3f51b5 100%);
+            background-image: linear-gradient(rgba(26, 35, 126, 0.7), rgba(63, 81, 181, 0.7)), url("{{ asset('images/bg-home.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: #ffffff;
             text-align: center;
-            padding: 6rem 2rem;
+            position: relative;
+            
+            /* BARU: Membuat section setinggi layar penuh dan menengahkan konten */
+            height: 100vh; /* Set tinggi 100% dari tinggi viewport/layar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2rem; /* Menghapus padding vertikal, karena sudah diatur oleh flexbox */
         }
         .hero-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 3.5rem;
             font-weight: 700;
             margin: 0 0 0.5rem 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
         }
         .hero-subtitle {
             font-family: 'Roboto', sans-serif;
@@ -299,14 +308,12 @@
                 </div>
 
                 <div class="chart-container">
-                    <!-- Navigasi Tab -->
                     <div class="chart-tabs">
                         <button class="chart-tab-item active" data-chart="pemilik">Chart Pemilik Tower</button>
                         <button class="chart-tab-item" data-chart="koneksi">Chart Tipe Koneksi</button>
                         <button class="chart-tab-item" data-chart="operator">Chart Operator</button>
                     </div>
 
-                    <!-- Filter Dropdown -->
                     <div class="chart-filters">
                         <select id="kecamatanFilter">
                             <option value="semua">Semua Kecamatan</option>
@@ -321,7 +328,6 @@
                         </select>
                     </div>
 
-                    <!-- Canvas untuk Chart -->
                     <div>
                         <canvas id="towerChart"></canvas>
                     </div>
@@ -330,7 +336,7 @@
         </section>
 
     </main>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
