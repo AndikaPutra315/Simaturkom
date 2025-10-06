@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SuAdmin\DataMenaraController;
+use App\Http\Controllers\SuAdmin\RegulasiController; // <-- DITAMBAHKAN
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +37,11 @@ Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkE
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+// --- Rute Admin ---
 Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(function () {
 
     Route::resource('datamenara', DataMenaraController::class);
-    });
+    
+    Route::resource('regulasi', RegulasiController::class); 
+    
+});

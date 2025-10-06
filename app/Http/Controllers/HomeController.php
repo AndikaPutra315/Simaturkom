@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DataMenara; // <-- IMPORT MODEL DATA MENARA
+use App\Models\Regulasi;
 
 class HomeController extends Controller
 {
@@ -36,6 +37,10 @@ class HomeController extends Controller
      */
     public function regulasi()
     {
-        return view('regulasi');
+        // 2. Ambil semua data regulasi dari database
+        $regulasiData = Regulasi::latest()->get();
+
+        // 3. Kirim data ke view 'regulasi'
+        return view('regulasi', ['regulasiData' => $regulasiData]);
     }
 }
