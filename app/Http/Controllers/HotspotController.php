@@ -3,31 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\HotspotData; // Menggunakan Model HotspotData yang baru
 
 class HotspotController extends Controller
 {
+    /**
+     * Menampilkan halaman data hotspot publik dengan filter kategori.
+     */
     public function index(Request $request)
     {
-        $semuaHotspot = [
-            ['id' => 'HS-SKPD-001', 'lokasi' => 'Dinas Kominfo', 'kategori' => 'SKPD', 'alamat' => 'Jl. Pahlawan No. 1', 'kecamatan' => 'Tanjung', 'status' => 'aktif'],
-            ['id' => 'HS-FREE-012', 'lokasi' => 'Taman Kota', 'kategori' => 'Free', 'alamat' => 'Jl. Jend. Sudirman', 'kecamatan' => 'Tanjung', 'status' => 'aktif'],
-            ['id' => 'HS-SKPD-002', 'lokasi' => 'Badan Kepegawaian Daerah', 'kategori' => 'SKPD', 'alamat' => 'Komplek Perkantoran', 'kecamatan' => 'Murung Pudak', 'status' => 'aktif'],
-            ['id' => 'HS-FREE-015', 'lokasi' => 'Terminal Murung Pudak', 'kategori' => 'Free', 'alamat' => 'Jl. A. Yani KM. 5', 'kecamatan' => 'Murung Pudak', 'status' => 'nonaktif'],
-            ['id' => 'HS-FREE-021', 'lokasi' => 'Alun-Alun', 'kategori' => 'Free', 'alamat' => 'Pusat Kota', 'kecamatan' => 'Tanjung', 'status' => 'aktif'],
-            ['id' => 'HS-SKPD-003', 'lokasi' => 'Dinas Pendidikan', 'kategori' => 'SKPD', 'alamat' => 'Jl. Mawar', 'kecamatan' => 'Tanjung', 'status' => 'aktif'],
-        ];
-
-        
+        // 1. Ambil kategori aktif dari URL, default-nya adalah 'skpd'
         $kategoriAktif = $request->query('kategori', 'skpd');
 
-        $hotspots = array_filter($semuaHotspot, function ($hotspot) use ($kategoriAktif) {
-            return strtolower($hotspot['kategori']) === $kategoriAktif;
-        });
+        // 2. Siapkan query ke database
+        $query = HotspotData::query();
 
-        // Kembalikan ke satu view: 'hotspot.blade.php'
-        return view('hotspot', [
-            'hotspots' => $hotspots,
-            'kategoriAktif' => $kategoriAktif
-        ]);
+        // 3. Terapkan filter berdasarkan tab yang aktif
+        if ($kategoriAktif == 'skpd') {
+            // Jika tab SKPD aktif, cari yang keterangannya 'SKPD'
+            $query->where('keterangan', 'SKPD');
+        } else {
+            // Jika tab Layanan Gratis aktif, cari yang keterangannya BUKAN 'SKPD'
+            // (misal: Ruang Terbuka Hijau, Fasilitas Umum, dll)
+            $query->where('keterangan', '!=', 'SKPD');
+        }
+
+        // 4. Ambil data, urutkan dari tahun terbaru, dan gunakan paginasi
+        $hotspots = $query->latest('tahun')->paginate(15); // Menampilkan 15 data per halaman
+
+        // 5. Kirim data dan kategori aktif ke view
+        return view('hotspot', compact('hotspots', 'kategoriAktif'));
     }
 }
