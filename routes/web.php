@@ -8,7 +8,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SuAdmin\DataMenaraController;
-use App\Http\Controllers\SuAdmin\RegulasiController; // <-- DITAMBAHKAN
+use App\Http\Controllers\SuAdmin\RegulasiController;
+use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +45,5 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     
     Route::resource('regulasi', RegulasiController::class); 
     
+    Route::resource('hotspot', AdminHotspotController::class);
 });
