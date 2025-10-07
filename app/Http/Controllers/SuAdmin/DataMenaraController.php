@@ -52,7 +52,6 @@ class DataMenaraController extends Controller
             'alamat' => 'required|string',
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
-            'tipe_ukuran' => 'required|string|max:255',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
         ]);

@@ -82,7 +82,7 @@
                             @endforeach
                         </select>
                     </form>
-                    
+
                     <div class="action-buttons">
                         <a href="{{ route('suadmin.datamenara.index') }}" class="btn-custom btn-refresh">
                             <i class="fas fa-sync-alt"></i> Refresh
@@ -107,7 +107,6 @@
                                 <th>Alamat</th>
                                 <th>Longitude</th>
                                 <th>Latitude</th>
-                                <th>Tipe Ukuran</th>
                                 <th>Tinggi Tower</th>
                                 <th>Status</th>
                                 <th class="text-center">Aksi</th>
@@ -123,7 +122,6 @@
                                     <td style="white-space: normal; min-width: 250px;">{{ $item->alamat }}</td>
                                     <td>{{ $item->longitude }}</td>
                                     <td>{{ $item->latitude }}</td>
-                                    <td>{{ $item->tipe_ukuran }}</td>
                                     <td>{{ $item->tinggi_tower }} m</td>
                                     <td>
                                         @if (strtolower($item->status) == 'aktif')

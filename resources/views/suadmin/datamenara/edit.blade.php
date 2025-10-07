@@ -58,14 +58,6 @@
                             <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" value="{{ old('latitude', $datamenara->latitude) }}" required>
                             @error('latitude')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-                         <div class="col-md-4">
-                            <label for="tipe_ukuran" class="form-label">Tipe Ukuran</label>
-                            <select class="form-select @error('tipe_ukuran') is-invalid @enderror" id="tipe_ukuran" name="tipe_ukuran" required>
-                                <option value="makrocell" {{ old('tipe_ukuran', $datamenara->tipe_ukuran) == 'makrocell' ? 'selected' : '' }}>Makrocell</option>
-                                <option value="mikrocell" {{ old('tipe_ukuran', $datamenara->tipe_ukuran) == 'mikrocell' ? 'selected' : '' }}>Mikrocell</option>
-                            </select>
-                            @error('tipe_ukuran')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
                         <div class="col-md-4">
                             <label for="status" class="form-label">Status</label>
                              <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>

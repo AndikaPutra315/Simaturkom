@@ -77,12 +77,11 @@
                             <tr>
                                 <th>Kode</th>
                                 <th>Provider</th>
-                                <th>Kelurahan</th>
+                                <th>DESA/Kelurahan</th>
                                 <th>Kecamatan</th>
                                 <th>Alamat</th>
                                 <th>Longitude</th>
                                 <th>Latitude</th>
-                                <th>Tipe Ukuran</th>
                                 <th>Status</th>
                                 <th>Tinggi Tower</th>
                             </tr>
@@ -98,7 +97,6 @@
                                     <td>{{ $menara->alamat }}</td>
                                     <td>{{ $menara->longitude }}</td>
                                     <td>{{ $menara->latitude }}</td>
-                                    <td>{{ $menara->tipe_ukuran }}</td>
                                     <td>
                                         @if (strtolower($menara->status) == 'aktif')
                                             <span class="status-badge status-aktif">Aktif</span>
