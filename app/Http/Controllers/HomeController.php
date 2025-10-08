@@ -17,7 +17,7 @@ class HomeController extends Controller
             'title' => 'Selamat Datang!',
             'description' => 'Ini adalah halaman utama website yang dibuat dengan Laravel.'
         ];
-        return view('home', $data);
+        return view('pages.home', $data);
     }
 
     /**
@@ -29,7 +29,7 @@ class HomeController extends Controller
         $menaraData = DataMenara::paginate(10);
 
         // Kirim data ke view
-        return view('datamenara', ['menaraData' => $menaraData]);
+        return view('pages.datamenara', ['menaraData' => $menaraData]);
     }
 
     /**
@@ -41,6 +41,6 @@ class HomeController extends Controller
         $regulasiData = Regulasi::latest()->get();
 
         // 3. Kirim data ke view 'regulasi'
-        return view('regulasi', ['regulasiData' => $regulasiData]);
+        return view('pages.regulasi', ['regulasiData' => $regulasiData]);
     }
 }

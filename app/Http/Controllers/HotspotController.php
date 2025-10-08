@@ -32,6 +32,6 @@ class HotspotController extends Controller
         $hotspots = $query->latest('tahun')->paginate(15); // Menampilkan 15 data per halaman
 
         // 5. Kirim data dan kategori aktif ke view
-        return view('hotspot', compact('hotspots', 'kategoriAktif'));
+        return view('pages.hotspot', compact('hotspots', 'kategoriAktif'));
     }
 }

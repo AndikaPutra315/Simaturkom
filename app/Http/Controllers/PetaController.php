@@ -10,6 +10,6 @@ class PetaController extends Controller
     {
         // Di sini Anda bisa mengambil data awal untuk filter dari database
         // Misalnya, daftar semua provider, operator, dan kecamatan
-        return view('peta');
+        return view('pages.peta');
     }
 }
