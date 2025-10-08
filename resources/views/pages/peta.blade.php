@@ -5,183 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Sebaran - SIMATURKOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fc;
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
+        .main-container { display: flex; height: calc(100vh - 72px); }
+        .filter-sidebar { width: 350px; background-color: #ffffff; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10; overflow-y: auto; }
+        .map-content { flex-grow: 1; position: relative; }
+        #map { width: 100%; height: 100%; }
+        .nav-pills .nav-link.active { background-color: #1a237e; }
+        .form-label { font-weight: 500; color: #33425e; }
+        .loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3; border-radius: 50%; border-top: 8px solid #1a237e;
+            width: 60px; height: 60px; animation: spin 1s linear infinite;
+            display: none; z-index: 1000;
         }
-        .main-container {
-            display: flex;
-            min-height: calc(100vh - 56px); /* Adjust based on header height */
-        }
-        .filter-sidebar {
-            width: 350px;
-            background-color: #ffffff;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-        .map-content {
-            flex-grow: 1;
-            padding: 30px;
-        }
-        .map-placeholder {
-            width: 100%;
-            height: 100%;
-            background-color: #e9ecef;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #6c757d;
-            flex-direction: column;
-            text-align: center;
-        }
-        .map-placeholder i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-        .nav-pills .nav-link {
-            color: #66789a;
-            font-weight: 500;
-        }
-        .nav-pills .nav-link.active {
-            background-color: #1a237e;
-            color: #ffffff;
-        }
-        .form-label {
-            font-weight: 500;
-            color: #33425e;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     @include('includes.header')
-
     <div class="main-container">
         <aside class="filter-sidebar">
             <h3 class="fw-bold mb-4" style="color: #1a237e;">Filter Peta</h3>
-
             <ul class="nav nav-pills nav-fill mb-4" id="petaTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="peta-tower-tab" data-bs-toggle="pill" data-bs-target="#peta-tower" type="button" role="tab">Peta Tower</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="peta-zona-tab" data-bs-toggle="pill" data-bs-target="#peta-zona" type="button" role="tab">Peta Zona</button>
-                </li>
+                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#peta-tower" type="button">Peta Tower</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#peta-zona" type="button">Peta Zona</button></li>
             </ul>
-
             <div class="tab-content" id="petaTabContent">
                 <div class="tab-pane fade show active" id="peta-tower" role="tabpanel">
-                    <form>
+                    <form id="formPetaTower">
                         <div class="mb-3">
-                            <label for="tipePeta" class="form-label">Tipe Peta</label>
-                            <select class="form-select" id="tipePeta">
-                                <option value="" selected disabled>Pilih Tipe Peta...</option>
-                                <option value="provider">Provider (Pemilik Tower)</option>
-                                <option value="operator">Operator</option>
+                            <label for="provider" class="form-label">Provider</label>
+                            <select class="form-select" id="provider">
+                                <option value="semua">Semua Provider</option>
+                                @foreach($providers as $provider)
+                                    <option value="{{ $provider->provider }}">{{ $provider->provider }}</option>
+                                @endforeach
                             </select>
-                        </div>
-                        {{-- Wrapper ini akan disembunyikan/ditampilkan oleh JavaScript --}}
-                        <div class="mb-3" id="providerOperatorWrapper" style="display: none;">
-                            <label for="providerOperator" class="form-label" id="providerOperatorLabel">Provider</label>
-                            <select class="form-select" id="providerOperator"></select>
                         </div>
                         <div class="mb-3">
                             <label for="kecamatanTower" class="form-label">Kecamatan</label>
                             <select class="form-select" id="kecamatanTower">
-                                <option>Tanjung</option>
-                                <option>Murung Pudak</option>
-                                <option>Haruai</option>
-                                <option>Kelua</option>
+                                <option value="semua">Semua Kecamatan</option>
+                                @foreach($kecamatans as $kecamatan)
+                                    <option value="{{ $kecamatan->kecamatan }}">{{ $kecamatan->kecamatan }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary fw-bold" style="background-color: #3f51b5; border:none;">Tampilkan Peta</button>
-                        </div>
+                        <div class="d-grid"><button type="submit" class="btn btn-primary fw-bold" style="background-color: #3f51b5; border:none;">Tampilkan Peta</button></div>
                     </form>
                 </div>
-
                 <div class="tab-pane fade" id="peta-zona" role="tabpanel">
-                    <form>
-                        <div class="mb-3">
-                            <label for="tipeZona" class="form-label">Tipe Zona</label>
-                            <select class="form-select" id="tipeZona">
-                                <option>Semua</option>
-                                <option>Sub Urban</option>
-                                <option>Rural</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="kecamatanZona" class="form-label">Kecamatan</label>
-                            <select class="form-select" id="kecamatanZona">
-                                <option>Tanjung</option>
-                                <option>Murung Pudak</option>
-                                <option>Haruai</option>
-                                <option>Kelua</option>
-                            </select>
-                        </div>
-                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary fw-bold" style="background-color: #3f51b5; border:none;">Tampilkan Peta</button>
-                        </div>
-                    </form>
+                    <p class="text-center text-muted">Fitur Peta Zona sedang dalam pengembangan.</p>
                 </div>
             </div>
         </aside>
-
         <main class="map-content">
-            <div class="map-placeholder">
-                <i class="fas fa-map-marked-alt"></i>
-                <p>Peta akan ditampilkan di sini setelah filter diterapkan.</p>
-            </div>
+            <div id="map"></div>
+            <div id="mapLoader" class="loader"></div>
         </main>
     </div>
 
     @include('includes.footer')
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const tipePetaSelect = document.getElementById('tipePeta');
-            const providerOperatorWrapper = document.getElementById('providerOperatorWrapper');
-            const providerOperatorLabel = document.getElementById('providerOperatorLabel');
-            const providerOperatorSelect = document.getElementById('providerOperator');
+            const map = L.map('map').setView([-2.16, 115.38], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 
-            const data = {
-                provider: ['PT. DAYAMITRA TELEKOMUNIKASI', 'PT. TELKOMSEL', 'PT. PROTELINDO'],
-                operator: ['Telkomsel', 'Indosat', 'XL Axiata']
-            };
+            // **PERUBAHAN UTAMA DI SINI**
+            // Menggunakan L.featureGroup() alih-alih L.layerGroup()
+            const markersLayer = L.featureGroup().addTo(map);
 
-            function updateProviderOperatorDropdown() {
-                const selectedType = tipePetaSelect.value;
-                if (!selectedType) return; // Jangan lakukan apa-apa jika belum dipilih
+            const mapLoader = document.getElementById('mapLoader');
+            const formPetaTower = document.getElementById('formPetaTower');
 
-                providerOperatorLabel.textContent = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
-                providerOperatorSelect.innerHTML = '';
+            formPetaTower.addEventListener('submit', function(event) {
+                event.preventDefault();
+                mapLoader.style.display = 'block';
 
-                const options = data[selectedType];
-                options.forEach(optionText => {
-                    const option = document.createElement('option');
-                    option.value = optionText;
-                    option.textContent = optionText;
-                    providerOperatorSelect.appendChild(option);
+                const params = new URLSearchParams({
+                    provider: document.getElementById('provider').value,
+                    kecamatan: document.getElementById('kecamatanTower').value,
                 });
-            }
+                
+                fetch(`{{ route('peta.menara_data') }}?${params.toString()}`)
+                    .then(response => response.json())
+                    .then(dataMenara => {
+                        markersLayer.clearLayers();
+                        if (dataMenara.length === 0) {
+                            alert('Tidak ada data menara yang ditemukan dengan filter ini.');
+                            mapLoader.style.display = 'none';
+                            return;
+                        }
 
-            // Event listener untuk memanggil fungsi setiap kali pilihan 'Tipe Peta' berubah
-            tipePetaSelect.addEventListener('change', function() {
-                if (this.value) {
-                    // Tampilkan wrapper dropdown kedua
-                    providerOperatorWrapper.style.display = 'block';
-                    // Panggil fungsi untuk mengisi opsi-opsinya
-                    updateProviderOperatorDropdown();
-                }
+                        dataMenara.forEach(menara => {
+                            if (menara.latitude && menara.longitude) {
+                                const lat = parseFloat(menara.latitude);
+                                const lon = parseFloat(menara.longitude);
+                                if (!isNaN(lat) && !isNaN(lon)) {
+                                    const marker = L.marker([lat, lon]);
+                                    marker.bindPopup(`<b>${menara.provider || 'Data Tower'}</b><br>${menara.alamat}`);
+                                    markersLayer.addLayer(marker);
+                                }
+                            }
+                        });
+
+                        if (markersLayer.getLayers().length > 0) {
+                            map.fitBounds(markersLayer.getBounds());
+                        }
+                        
+                        mapLoader.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching map data:', error);
+                        alert('Terjadi kesalahan saat mengambil data peta.');
+                        mapLoader.style.display = 'none';
+                    });
             });
         });
     </script>
 </body>
 </html>
+

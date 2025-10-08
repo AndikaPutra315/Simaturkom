@@ -24,6 +24,7 @@ Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamen
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
+Route::get('/peta/menara-data', [App\Http\Controllers\PetaController::class, 'getMenaraData'])->name('peta.menara_data');
 
 
 // --- Rute Autentikasi ---
