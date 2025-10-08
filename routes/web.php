@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SuAdmin\DataMenaraController;
 use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
+use App\Http\Controllers\PetaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara'); // URL diperbaiki (tanpa strip)
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
+Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 
 
 // --- Rute Autentikasi ---

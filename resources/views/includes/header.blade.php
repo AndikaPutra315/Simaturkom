@@ -91,7 +91,7 @@
             <li><a href="{{ url('/hotspot') }}" class="{{ Request::is('hotspot') ? 'active' : '' }}">Hotspot</a></li>
             <li><a href="{{ route('regulasi') }}" class="{{ Request::routeIs('regulasi') ? 'active' : '' }}">Regulasi</a></li>
             <li><a href="{{ url('/data-menara') }}" class="{{ Request::is('data-menara') ? 'active' : '' }}">Data Menara</a></li>
-            <li><a href="#" class="{{ Request::is('peta-zona') ? 'active' : '' }}">Peta</a></li>
+            <li><a href="{{ route('peta.index') }}" class="{{ Request::is('peta') ? 'active' : '' }}">Peta Sebaran</a></li>
             <li><a href="{{ url('/#data-infrastruktur') }}" class="{{ Request::is('statistik') ? 'active' : '' }}">Statistik</a></li>
         </ul>
     </nav>
