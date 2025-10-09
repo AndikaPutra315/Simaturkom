@@ -26,7 +26,14 @@
                             <h1 class="mb-0 fw-bold">Kelola Data Hotspot</h1>
                             <p class="text-muted mb-0">Tambah, edit, atau hapus data titik hotspot.</p>
                         </div>
-                        <a href="{{ route('suadmin.hotspot.create') }}" class="btn btn-primary fw-bold"><i class="fas fa-plus me-2"></i>Tambah Hotspot</a>
+                        <div class="d-flex gap-2">
+                             <a href="{{ route('suadmin.hotspot.pdf') }}" class="btn btn-danger fw-bold" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>Generate PDF
+                            </a>
+                            <a href="{{ route('suadmin.hotspot.create') }}" class="btn btn-primary fw-bold">
+                                <i class="fas fa-plus me-2"></i>Tambah Hotspot
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-4">

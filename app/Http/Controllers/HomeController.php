@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DataMenara; // <-- IMPORT MODEL DATA MENARA
+use App\Models\DataMenara;
 use App\Models\Regulasi;
+use Barryvdh\DomPDF\Facade\Pdf; // Pastikan baris ini ada
 
 class HomeController extends Controller
 {
@@ -21,15 +22,32 @@ class HomeController extends Controller
     }
 
     /**
-     * Menampilkan halaman data menara dengan data dari database.
+     * Menampilkan halaman data menara dengan data dari database dan filter.
      */
-    public function dataMenara()
+    public function dataMenara(Request $request)
     {
-        // Ambil data dari database dengan paginasi (10 data per halaman)
-        $menaraData = DataMenara::paginate(10);
+        $query = DataMenara::query();
 
-        // Kirim data ke view
-        return view('pages.datamenara', ['menaraData' => $menaraData]);
+        // Menerapkan filter provider jika ada
+        if ($request->filled('provider')) {
+            $query->where('provider', $request->provider);
+        }
+        
+        // Menerapkan filter kecamatan jika ada
+        if ($request->filled('kecamatan')) {
+            $query->where('kecamatan', $request->kecamatan);
+        }
+
+        $menaraData = $query->latest()->paginate(10);
+        
+        // Menjaga agar filter tetap aktif saat berpindah halaman paginasi
+        $menaraData->appends($request->only(['provider', 'kecamatan']));
+
+        // Mengambil data unik untuk mengisi dropdown filter
+        $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
+        $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
+        
+        return view('pages.datamenara', compact('menaraData', 'providers', 'kecamatans'));
     }
 
     /**
@@ -37,10 +55,37 @@ class HomeController extends Controller
      */
     public function regulasi()
     {
-        // 2. Ambil semua data regulasi dari database
         $regulasiData = Regulasi::latest()->get();
-
-        // 3. Kirim data ke view 'regulasi'
         return view('pages.regulasi', ['regulasiData' => $regulasiData]);
+    }
+    
+    /**
+     * Method baru untuk membuat dan men-download PDF Data Menara.
+     */
+    public function generateMenaraPDF(Request $request)
+    {
+        $query = DataMenara::query();
+
+        // Menerapkan filter yang sama dari halaman publik
+        if ($request->filled('provider')) {
+            $query->where('provider', $request->provider);
+        }
+        if ($request->filled('kecamatan')) {
+            $query->where('kecamatan', $request->kecamatan);
+        }
+
+        // Ambil SEMUA data yang cocok (tanpa paginasi)
+        $menaraData = $query->latest()->get();
+
+        // Load view PDF dengan data
+        $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData'));
+        
+        // Atur orientasi kertas menjadi landscape karena tabelnya lebar
+        $pdf->setPaper('a4', 'landscape'); 
+
+        $fileName = 'data-menara-telekomunikasi-' . date('Y-m-d') . '.pdf';
+        
+        // Download file PDF
+        return $pdf->download($fileName);
     }
 }

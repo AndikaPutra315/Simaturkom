@@ -22,6 +22,7 @@ use App\Http\Controllers\SuAdmin\UserManagementController;
 // --- Rute Halaman Utama ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara');
+Route::get('/data-menara/pdf', [App\Http\Controllers\HomeController::class, 'generateMenaraPDF'])->name('datamenara.pdf');
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 Route::get('/hotspot/autocomplete', [App\Http\Controllers\HotspotController::class, 'autocomplete'])->name('hotspot.autocomplete');
@@ -51,6 +52,7 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('datamenara', DataMenaraController::class);
     Route::resource('regulasi', RegulasiController::class);
+    Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
     Route::resource('hotspot', AdminHotspotController::class);
     Route::resource('users', UserManagementController::class);
 });
