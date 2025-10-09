@@ -11,7 +11,7 @@ class LoginController extends Controller
     /**
      * Where to redirect users after login.
      */
-    protected $redirectTo = '/suadmin/datamenara';
+    protected $redirectTo = '/suadmin/dashboard';
 
     /**
      * Create a new controller instance.

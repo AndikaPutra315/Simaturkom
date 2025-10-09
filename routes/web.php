@@ -11,6 +11,7 @@ use App\Http\Controllers\SuAdmin\DataMenaraController;
 use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
 use App\Http\Controllers\PetaController;
+use App\Http\Controllers\SuAdmin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ use App\Http\Controllers\PetaController;
 
 // --- Rute Halaman Utama ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara'); // URL diperbaiki (tanpa strip)
+Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara');
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
@@ -44,9 +45,12 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name(
 // --- Rute Admin ---
 Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(function () {
 
+    // RUTE DASHBOARD YANG BARU DITAMBAHKAN
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('datamenara', DataMenaraController::class);
-    
-    Route::resource('regulasi', RegulasiController::class); 
-    
+    Route::resource('regulasi', RegulasiController::class);
     Route::resource('hotspot', AdminHotspotController::class);
 });
+
+// Kurung kurawal '}' yang salah di akhir sudah dihapus
