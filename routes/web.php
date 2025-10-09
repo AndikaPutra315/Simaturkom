@@ -12,7 +12,7 @@ use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
 use App\Http\Controllers\PetaController;
 use App\Http\Controllers\SuAdmin\DashboardController;
-
+use App\Http\Controllers\SuAdmin\UserManagementController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,10 +49,10 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
 
     // RUTE DASHBOARD YANG BARU DITAMBAHKAN
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     Route::resource('datamenara', DataMenaraController::class);
     Route::resource('regulasi', RegulasiController::class);
     Route::resource('hotspot', AdminHotspotController::class);
+    Route::resource('users', UserManagementController::class);
 });
 
 // Kurung kurawal '}' yang salah di akhir sudah dihapus
