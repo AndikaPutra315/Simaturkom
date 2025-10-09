@@ -24,6 +24,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/data-menara', [HomeController::class, 'dataMenara'])->name('datamenara');
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
+Route::get('/hotspot/autocomplete', [App\Http\Controllers\HotspotController::class, 'autocomplete'])->name('hotspot.autocomplete');
+Route::get('/hotspot/pdf', [App\Http\Controllers\HotspotController::class, 'generatePDF'])->name('hotspot.pdf');
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 Route::get('/peta/menara-data', [App\Http\Controllers\PetaController::class, 'getMenaraData'])->name('peta.menara_data');
 

@@ -18,6 +18,15 @@
         .card-header { padding: 25px 30px; border-bottom: 1px solid #eef2f9; }
         .card-header h1 { margin: 0; font-size: 1.75rem; font-weight: 600; color: #1a237e; }
         .card-header p { margin: 5px 0 0 0; color: #66789a; font-size: 0.95rem; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; gap: 15px; flex-wrap: wrap; }
+        .search-form { display: flex; gap: 10px; position: relative; }
+        .action-buttons { display: flex; gap: 10px; }
+        .btn-custom { display: inline-flex; align-items: center; padding: 8px 18px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; text-decoration: none; border: none; transition: all 0.3s ease; }
+        .btn-refresh { background-color: #1a237e; color: white; }
+        .btn-refresh:hover { background-color: #151c68; color: white; }
+        .btn-pdf { background-color: #c82333; color: white; }
+        .btn-pdf:hover { background-color: #a21b29; color: white; }
+        .btn-custom i { margin-right: 8px; }
         .tabs-container { display: flex; border-bottom: 1px solid #eef2f9; padding: 0 30px; }
         .tab-link { padding: 15px 25px; cursor: pointer; text-decoration: none; color: #66789a; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
         .tab-link:hover { color: #1a237e; }
@@ -30,6 +39,28 @@
         .data-table tbody tr { border-bottom: 1px solid #eef2f9; }
         .table-footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-top: 1px solid #eef2f9; }
         .entries-info { color: #66789a; font-size: 0.9rem; }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f4f7fc;
+        }
     </style>
 </head>
 <body>
@@ -42,18 +73,29 @@
                     <p>Daftar titik hotspot SKPD dan hotspot publik gratis di Kabupaten Tabalong.</p>
                 </div>
 
+                <div class="toolbar">
+                    <form action="{{ route('hotspot.index') }}" method="GET" class="search-form" id="searchForm">
+                        <input type="hidden" name="kategori" value="{{ $kategoriAktif }}">
+                        <input type="text" name="search" id="searchInput" class="form-control" placeholder="Cari nama, alamat, atau tahun..." value="{{ $searchTerm ?? '' }}" autocomplete="off">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        <div class="autocomplete-suggestions" id="suggestions"></div>
+                    </form>
+                    <div class="action-buttons">
+                        <a href="{{ route('hotspot.index', ['kategori' => $kategoriAktif]) }}" class="btn-custom btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</a>
+                        <a href="{{ route('hotspot.pdf', ['kategori' => $kategoriAktif, 'search' => $searchTerm ?? '']) }}" class="btn-custom btn-pdf" target="_blank">
+                            <i class="fas fa-file-pdf"></i> Generate PDF
+                        </a>
+                    </div>
+                </div>
+
                 <div class="tabs-container">
-                    {{-- Link tab sekarang menggunakan parameter 'kategori' untuk filtering --}}
-                    <a href="{{ route('hotspot.index', ['kategori' => 'skpd']) }}"
-                        class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
-                    <a href="{{ route('hotspot.index', ['kategori' => 'free']) }}"
-                        class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Hotspot RTH/Layanan Publik</a>
+                    <a href="{{ route('hotspot.index', ['kategori' => 'skpd', 'search' => $searchTerm ?? '']) }}" class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
+                    <a href="{{ route('hotspot.index', ['kategori' => 'free', 'search' => $searchTerm ?? '']) }}" class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Hotspot RTH/Layanan Publik</a>
                 </div>
 
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
-                            {{-- Menyesuaikan header tabel dengan database --}}
                             <tr>
                                 <th>Nama Tempat</th>
                                 <th>Alamat</th>
@@ -64,7 +106,6 @@
                         <tbody>
                             @forelse ($hotspots as $hotspot)
                                 <tr>
-                                    {{-- Menyesuaikan nama field dengan database --}}
                                     <td>{{ $hotspot->nama_tempat }}</td>
                                     <td>{{ $hotspot->alamat }}</td>
                                     <td>{{ $hotspot->tahun }}</td>
@@ -73,7 +114,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" style="text-align: center; padding: 20px;">
-                                        Tidak ada data hotspot untuk kategori ini.
+                                        Tidak ada data hotspot yang ditemukan.
                                     </td>
                                 </tr>
                             @endforelse
@@ -82,16 +123,69 @@
                 </div>
 
                 <div class="table-footer">
-                    <div class="entries-info">
-                        {{-- Info paginasi dinamis --}}
-                        Menampilkan {{ $hotspots->firstItem() }} sampai {{ $hotspots->lastItem() }} dari {{ $hotspots->total() }} entri
+                   <div class="entries-info">
+                        @if ($hotspots->total() > 0)
+                            Menampilkan {{ $hotspots->firstItem() }} sampai {{ $hotspots->lastItem() }} dari {{ $hotspots->total() }} entri
+                        @else
+                            Tidak ada entri
+                        @endif
                     </div>
-                    {{-- Render link paginasi otomatis dari Laravel --}}
                     {{ $hotspots->links('pagination::bootstrap-5') }}
                 </div>
+
             </div>
         </div>
     </main>
     @include('includes.footer')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestionsContainer = document.getElementById('suggestions');
+            const searchForm = document.getElementById('searchForm');
+            let debounceTimer; // Variabel untuk menyimpan timer
+
+            searchInput.addEventListener('input', function() {
+                const term = this.value;
+                
+                // Hapus timer yang ada setiap kali pengguna mengetik
+                clearTimeout(debounceTimer);
+
+                if (term.length < 2) {
+                    suggestionsContainer.innerHTML = '';
+                    return;
+                }
+
+                // Buat timer baru. Kode di dalamnya hanya akan berjalan jika pengguna berhenti mengetik selama 300ms
+                debounceTimer = setTimeout(() => {
+                    fetch(`{{ route('hotspot.autocomplete') }}?term=${term}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsContainer.innerHTML = '';
+                            data.forEach(suggestion => {
+                                const item = document.createElement('div');
+                                item.classList.add('suggestion-item');
+                                item.textContent = suggestion;
+                                
+                                item.addEventListener('click', function() {
+                                    searchInput.value = this.textContent;
+                                    suggestionsContainer.innerHTML = '';
+                                    searchForm.submit();
+                                });
+
+                                suggestionsContainer.appendChild(item);
+                            });
+                        });
+                }, 300); // Jeda 300 milidetik
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchForm.contains(e.target)) {
+                    suggestionsContainer.innerHTML = '';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
