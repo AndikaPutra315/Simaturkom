@@ -5,20 +5,64 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DataMenara;
 use App\Models\Regulasi;
-use Barryvdh\DomPDF\Facade\Pdf; // Pastikan baris ini ada
+use App\Models\HotspotData;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomeController extends Controller
 {
     /**
-     * Menampilkan halaman utama.
+     * Menampilkan halaman utama dengan data awal untuk chart.
      */
     public function index()
     {
-        $data = [
-            'title' => 'Selamat Datang!',
-            'description' => 'Ini adalah halaman utama website yang dibuat dengan Laravel.'
+        // Query awal untuk chart (Semua Kecamatan)
+        $chartPemilikData = DataMenara::query()
+            ->select('provider', DB::raw('count(*) as total'))
+            ->groupBy('provider')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $initialChartData = [
+            'labels' => $chartPemilikData->pluck('provider'),
+            'data' => $chartPemilikData->pluck('total'),
         ];
-        return view('pages.home', $data);
+        
+        $totalMenara = DataMenara::count();
+        $rencanaPembangunan = 12;
+
+        // Mengambil daftar kecamatan untuk filter dropdown
+        $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
+
+        return view('pages.home', compact('initialChartData', 'totalMenara', 'rencanaPembangunan', 'kecamatans'));
+    }
+
+    /**
+     * BARU: Method untuk menyediakan data chart via AJAX.
+     */
+    public function getChartData(Request $request)
+    {
+        $kecamatan = $request->query('kecamatan');
+
+        $query = DataMenara::query()
+            ->select('provider', DB::raw('count(*) as total'))
+            ->groupBy('provider')
+            ->orderBy('total', 'desc');
+
+        // Terapkan filter kecamatan jika bukan 'semua'
+        if ($kecamatan && $kecamatan !== 'semua') {
+            $query->where('kecamatan', $kecamatan);
+        }
+
+        $data = $query->get();
+
+        // Siapkan data untuk dikirim sebagai JSON
+        $chartData = [
+            'labels' => $data->pluck('provider'),
+            'data' => $data->pluck('total'),
+        ];
+
+        return response()->json($chartData);
     }
 
     /**
@@ -28,22 +72,17 @@ class HomeController extends Controller
     {
         $query = DataMenara::query();
 
-        // Menerapkan filter provider jika ada
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
         
-        // Menerapkan filter kecamatan jika ada
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
         }
 
         $menaraData = $query->latest()->paginate(10);
-        
-        // Menjaga agar filter tetap aktif saat berpindah halaman paginasi
         $menaraData->appends($request->only(['provider', 'kecamatan']));
 
-        // Mengambil data unik untuk mengisi dropdown filter
         $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
         
@@ -60,13 +99,12 @@ class HomeController extends Controller
     }
     
     /**
-     * Method baru untuk membuat dan men-download PDF Data Menara.
+     * Method untuk membuat dan men-download PDF Data Menara.
      */
     public function generateMenaraPDF(Request $request)
     {
         $query = DataMenara::query();
 
-        // Menerapkan filter yang sama dari halaman publik
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
@@ -74,18 +112,13 @@ class HomeController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        // Ambil SEMUA data yang cocok (tanpa paginasi)
         $menaraData = $query->latest()->get();
 
-        // Load view PDF dengan data
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData'));
-        
-        // Atur orientasi kertas menjadi landscape karena tabelnya lebar
         $pdf->setPaper('a4', 'landscape'); 
 
         $fileName = 'data-menara-telekomunikasi-' . date('Y-m-d') . '.pdf';
         
-        // Download file PDF
         return $pdf->download($fileName);
     }
 }

@@ -29,6 +29,7 @@ Route::get('/hotspot/autocomplete', [App\Http\Controllers\HotspotController::cla
 Route::get('/hotspot/pdf', [App\Http\Controllers\HotspotController::class, 'generatePDF'])->name('hotspot.pdf');
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 Route::get('/peta/menara-data', [App\Http\Controllers\PetaController::class, 'getMenaraData'])->name('peta.menara_data');
+Route::get('/chart-data', [HomeController::class, 'getChartData'])->name('chart.data');
 
 
 // --- Rute Autentikasi ---

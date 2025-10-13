@@ -8,249 +8,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400;500&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <style>
-
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fc;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        main {
-            flex: 1;
-        }
-        .container {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-
-        .section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #1a237e;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .section-divider {
-            width: 80px;
-            height: 4px;
-            background-color: #ffab00;
-            border: none;
-            margin: 0 auto 40px auto;
-        }
-
-        .hero-container {
-            background-image: linear-gradient(rgba(26, 35, 126, 0.7), rgba(63, 81, 181, 0.7)), url("{{ asset('images/bg-home.png') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: #ffffff;
-            text-align: center;
-            position: relative;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0 2rem;
-        }
-        .hero-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-        }
-        .hero-subtitle {
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 0;
-        }
-
-        .hero-description {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 20px auto 30px auto;
-            line-height: 1.7;
-            opacity: 0.9;
-        }
-        .hero-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-        .hero-button {
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        .btn-primary-custom {
-            background-color: #ffab00;
-            color: #1a237e;
-        }
-        .btn-primary-custom:hover {
-            background-color: #ffd600;
-            transform: translateY(-3px);
-        }
-        .btn-secondary-custom {
-            background-color: transparent;
-            color: #ffffff;
-            border-color: #ffffff;
-        }
-        .btn-secondary-custom:hover {
-            background-color: #ffffff;
-            color: #1a237e;
-            transform: translateY(-3px);
-        }
-
-        .content-section {
-            padding: 60px 0;
-            background-color: #ffffff;
-        }
-        .content-section p {
-            font-size: 1rem;
-            color: #555;
-            line-height: 1.8;
-            text-align: justify;
-            max-width: 800px;
-            margin: 0 auto 20px auto;
-        }
-
-        .features-section {
-            padding: 60px 0;
-            background-color: #f4f7fc;
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .feature-card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(26, 35, 126, 0.1);
-        }
-        .feature-icon {
-            font-size: 3rem;
-            color: #1a237e;
-            margin-bottom: 20px;
-        }
-        .feature-card h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #333;
-            margin: 0 0 10px 0;
-        }
-        .feature-card p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #666;
-        }
-
-        .stats-and-chart-section {
-            padding: 60px 0;
-            background-color: #ffffff;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #1a237e 0%, #3f51b5 100%);
-            color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.2);
-        }
-        .stat-card .icon {
-            font-size: 3.5rem;
-            opacity: 0.8;
-        }
-        .stat-card .info .number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-        .stat-card .info .label {
-            font-size: 1rem;
-            font-weight: 400;
-            margin: 0;
-            opacity: 0.9;
-        }
-        .chart-container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        .chart-tabs {
-            display: flex;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 20px;
-        }
-        .chart-tab-item {
-            padding: 12px 25px;
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-            font-size: 1rem;
-            color: #495057;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        .chart-tab-item.active {
-            color: #1a237e;
-            font-weight: 600;
-            background-color: #eef2f9;
-            border-top-left-radius: 6px;
-            border-top-right-radius: 6px;
-        }
-        .chart-filters {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .chart-filters select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #dcdfe6;
-            border-radius: 6px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            background-color: #fdfdfd;
-        }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #f4f7fc; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+        .section-title { font-family: 'Montserrat', sans-serif; font-size: 2.25rem; font-weight: 700; color: #1a237e; text-align: center; margin-bottom: 15px; }
+        .section-divider { width: 80px; height: 4px; background-color: #ffab00; border: none; margin: 0 auto 40px auto; }
+        .hero-container { background-image: linear-gradient(rgba(26, 35, 126, 0.7), rgba(63, 81, 181, 0.7)), url("{{ asset('images/bg-home.png') }}"); background-size: cover; background-position: center; height: 100vh; color: #ffffff; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 2rem; }
+        .hero-title { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 700; margin: 0 0 0.5rem 0; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+        .hero-subtitle { font-family: 'Roboto', sans-serif; font-size: 1.2rem; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; margin-top: 0; }
+        .hero-description { font-size: 1.1rem; max-width: 600px; margin: 20px auto 30px auto; line-height: 1.7; opacity: 0.9; }
+        .hero-actions { display: flex; gap: 15px; justify-content: center; }
+        .hero-button { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; border: 2px solid transparent; }
+        .btn-primary-custom { background-color: #ffab00; color: #1a237e; }
+        .btn-primary-custom:hover { background-color: #ffd600; transform: translateY(-3px); }
+        .btn-secondary-custom { background-color: transparent; color: #ffffff; border-color: #ffffff; }
+        .btn-secondary-custom:hover { background-color: #ffffff; color: #1a237e; transform: translateY(-3px); }
+        .content-section { padding: 60px 0; background-color: #ffffff; }
+        .content-section p { text-align: justify; max-width: 800px; margin: 0 auto 20px auto; }
+        .features-section { padding: 60px 0; background-color: #f4f7fc; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+        .feature-card { background-color: #ffffff; border-radius: 8px; padding: 30px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 8px 25px rgba(26, 35, 126, 0.1); }
+        .feature-icon { font-size: 3rem; color: #1a237e; margin-bottom: 20px; }
+        .feature-card h3 { font-size: 1.25rem; }
+        .stats-and-chart-section { padding: 60px 0; background-color: #ffffff; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .stat-card { background: linear-gradient(135deg, #1a237e 0%, #3f51b5 100%); color: #ffffff; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px; box-shadow: 0 8px 20px rgba(26, 35, 126, 0.2); }
+        .stat-card .icon { font-size: 3rem; opacity: 0.8; }
+        .stat-card .info .number { font-size: 2.2rem; font-weight: 700; margin: 0; }
+        .stat-card .info .label { font-size: 0.95rem; font-weight: 400; margin: 0; opacity: 0.9; }
+        .chart-container { background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+        .chart-tabs { display: flex; border-bottom: 1px solid #dee2e6; margin-bottom: 20px; }
+        .chart-tab-item { padding: 12px 25px; cursor: pointer; border: none; background-color: transparent; font-size: 1rem; color: #495057; }
+        .chart-tab-item.active { color: #1a237e; font-weight: 600; background-color: #eef2f9; border-top-left-radius: 6px; border-top-right-radius: 6px; }
+        .chart-filters { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+        .chart-filters select { width: 100%; padding: 12px 15px; border: 1px solid #dcdfe6; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -267,7 +61,7 @@
                 </p>
                 <div class="hero-actions">
                     <a href="#data-infrastruktur" class="hero-button btn-primary-custom">Lihat Data</a>
-                    <a href="#" class="hero-button btn-secondary-custom">Jelajahi Peta</a>
+                    <a href="{{ route('peta.index') }}" class="hero-button btn-secondary-custom">Jelajahi Peta</a>
                 </div>
             </div>
         </section>
@@ -308,47 +102,40 @@
                 </div>
             </div>
         </section>
-
+        
         <section id="data-infrastruktur" class="stats-and-chart-section">
             <div class="container">
                 <h2 class="section-title">Data Infrastruktur</h2>
                 <hr class="section-divider">
-
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="icon"><i class="fas fa-satellite-dish"></i></div>
                         <div class="info">
-                            <p class="number">153</p>
+                            <p class="number">{{ $totalMenara }}</p>
                             <p class="label">Jumlah Tower BTS</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="icon"><i class="fas fa-clipboard-list"></i></div>
                         <div class="info">
-                            <p class="number">12</p>
+                            <p class="number">{{ $rencanaPembangunan }}</p>
                             <p class="label">Rencana Pembangunan</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="chart-container">
                     <div class="chart-tabs">
-                        <button class="chart-tab-item active" data-chart="pemilik">Chart Pemilik Tower</button>
-                        <button class="chart-tab-item" data-chart="koneksi">Chart Tipe Koneksi</button>
-                        <button class="chart-tab-item" data-chart="operator">Chart Operator</button>
+                        <button class="chart-tab-item active">Chart Pemilik Tower</button>
+                        <button class="chart-tab-item" disabled>Chart Tipe Koneksi</button>
+                        <button class="chart-tab-item" disabled>Chart Operator</button>
                     </div>
 
                     <div class="chart-filters">
-                        <select id="kecamatanFilter">
+                        <select id="kecamatanChartFilter" class="form-select">
                             <option value="semua">Semua Kecamatan</option>
-                            <option value="banua-lawas">Banua Lawas</option>
-                            <option value="pugaan">Pugaan</option>
-                            <option value="haruai">Haruai</option>
-                        </select>
-                        <select id="kategoriFilter">
-                            <option value="semua">Semua Kategori</option>
-                            <option value="komersil">Komersil</option>
-                            <option value="non-komersil">Non-Komersil</option>
+                            @foreach($kecamatans as $kecamatan)
+                                <option value="{{ $kecamatan->kecamatan }}">{{ $kecamatan->kecamatan }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -366,19 +153,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            const chartData = {
-                pemilik: {
-                    labels: ['Protelindo', 'Dayamitra', 'Tower Bersama', 'Centratama'],
-                    data: [40, 35, 30, 25]
-                },
-                koneksi: {
-                    labels: ['3G', '4G', '5G'],
-                    data: [50, 85, 18]
-                },
-                operator: {
-                    labels: ['Telkomsel', 'Indosat', 'XL Axiata', 'Smartfren'],
-                    data: [95, 40, 35, 15]
-                }
+            const initialChartData = {
+                labels: @json($initialChartData['labels']),
+                data: @json($initialChartData['data'])
             };
 
             Chart.register(ChartDataLabels);
@@ -387,74 +164,45 @@
             const towerChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: chartData.pemilik.labels,
+                    labels: initialChartData.labels,
                     datasets: [{
                         label: 'Jumlah',
-                        data: chartData.pemilik.data,
+                        data: initialChartData.data,
                         backgroundColor: 'rgba(26, 35, 126, 0.8)',
-                        borderColor: 'rgba(26, 35, 126, 1)',
-                        borderWidth: 1,
-                        borderRadius: 5,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grace: '10%'
-                        }
-                    },
-                    plugins: {
+                    scales: { y: { beginAtZero: true } },
+                    plugins: { 
                         legend: { display: false },
                         datalabels: {
                             anchor: 'end',
                             align: 'top',
-                            formatter: (value, context) => {
-                                const dataset = context.chart.data.datasets[0];
-                                const total = dataset.data.reduce((sum, data) => sum + data, 0);
-                                const percentage = (value / total * 100).toFixed(1) + '%';
-                                return percentage;
-                            },
                             color: '#333',
-                            font: {
-                                weight: 'bold',
-                                size: 12,
-                            }
+                            font: { weight: 'bold' },
+                            formatter: (value) => value,
                         }
                     }
                 }
             });
 
-            const tabs = document.querySelectorAll('.chart-tab-item');
-            const kecamatanFilter = document.getElementById('kecamatanFilter');
-            const kategoriFilter = document.getElementById('kategoriFilter');
+            const kecamatanFilter = document.getElementById('kecamatanChartFilter');
+            kecamatanFilter.addEventListener('change', function() {
+                const selectedKecamatan = this.value;
 
-            let activeChartType = 'pemilik';
-
-            function updateChart() {
-                const newData = chartData[activeChartType];
-                console.log(`Updating chart for: ${activeChartType}, Kecamatan: ${kecamatanFilter.value}, Kategori: ${kategoriFilter.value}`);
-                towerChart.data.labels = newData.labels;
-                towerChart.data.datasets[0].data = newData.data;
-                towerChart.update();
-            }
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(item => item.classList.remove('active'));
-                    this.classList.add('active');
-                    activeChartType = this.dataset.chart;
-                    updateChart();
-                });
+                fetch(`{{ route('chart.data') }}?kecamatan=${selectedKecamatan}`)
+                    .then(response => response.json())
+                    .then(newData => {
+                        towerChart.data.labels = newData.labels;
+                        towerChart.data.datasets[0].data = newData.data;
+                        towerChart.update();
+                    });
             });
-
-            kecamatanFilter.addEventListener('change', updateChart);
-            kategoriFilter.addEventListener('change', updateChart);
         });
     </script>
-
+    
     @include('includes.footer')
 
 </body>
