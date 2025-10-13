@@ -136,6 +136,6 @@
     </div>
 
     <div class="copyright-container">
-        <p class="copyright-text">© 2018 - 2025 DISKOMINFO TABALONG</p>
+        <p class="copyright-text">© 2025 DISKOMINFO TABALONG</p>
     </div>
 </footer>
