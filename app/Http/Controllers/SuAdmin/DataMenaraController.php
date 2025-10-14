@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\DataMenara;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DataMenaraController extends Controller
 {
@@ -83,7 +84,6 @@ class DataMenaraController extends Controller
             'alamat' => 'required|string',
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
-            'tipe_ukuran' => 'required|string|max:255',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
         ]);
@@ -103,5 +103,28 @@ class DataMenaraController extends Controller
 
         return redirect()->route('suadmin.datamenara.index')
                          ->with('success', 'Data menara berhasil dihapus.');
+    }
+
+    /**
+     * Generate PDF
+     */
+    public function generatePDF(Request $request)
+    {
+        $query = DataMenara::query();
+
+        if ($request->filled('provider')) {
+            $query->where('provider', $request->provider);
+        }
+        if ($request->filled('kecamatan')) {
+            $query->where('kecamatan', $request->kecamatan);
+        }
+
+        $menaraData = $query->get();
+        $title = 'Laporan Data Menara Telekomunikasi';
+
+        // DIUBAH: Variabel yang dikirim disesuaikan
+        $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData', 'title'));
+
+        return $pdf->stream('laporan-data-menara.pdf');
     }
 }

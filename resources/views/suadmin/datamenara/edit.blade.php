@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary">Update Data</button>
+                        <button type="submit" class="btn btn-prixamxamary">Update Data</button>
                         <a href="{{ route('suadmin.datamenara.index') }}" class="btn btn-secondary">Batal</a>
                     </div>
                 </form>

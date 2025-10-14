@@ -12,7 +12,7 @@
     <style>
         body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
         main { flex: 1; padding: 40px 0; }
-        .container-fluid { max-width: 1800px; margin: 0 auto; padding: 0 30px; } /* Margin auto ditambahkan */
+        .container-fluid { max-width: 1800px; margin: 0 auto; padding: 0 30px; }
         .content-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07); overflow: hidden; }
         .card-header { padding: 25px 30px; border-bottom: 1px solid #eef2f9; }
         .card-header h1 { margin: 0; font-size: 1.75rem; font-weight: 600; color: #1a237e; }
@@ -48,7 +48,6 @@
 
     <main>
         <div class="container-fluid">
-            {{-- Notifikasi Sukses --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -80,9 +79,12 @@
                         <a href="{{ route('suadmin.datamenara.index') }}" class="btn-custom btn-refresh">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </a>
-                        <button type="button" class="btn-custom btn-pdf">
+
+                        {{-- HANYA BAGIAN INI YANG DIUBAH DARI <button> MENJADI <a> --}}
+                        <a href="{{ route('suadmin.datamenara.pdf', request()->query()) }}" class="btn-custom btn-pdf" target="_blank">
                             <i class="fas fa-file-pdf"></i> Generate PDF
-                        </button>
+                        </a>
+
                         <a href="{{ route('suadmin.datamenara.create') }}" class="btn-custom btn-add">
                             <i class="fas fa-plus"></i>Tambah Data
                         </a>
