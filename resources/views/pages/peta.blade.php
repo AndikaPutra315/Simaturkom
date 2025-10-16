@@ -9,78 +9,128 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
-        .main-container { display: flex; height: calc(100vh - 72px); }
-        .filter-sidebar { width: 350px; background-color: #ffffff; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10; overflow-y: auto; }
-        .map-content { flex-grow: 1; position: relative; }
-        #map { width: 100%; height: 100%; }
-        .nav-pills .nav-link.active { background-color: #1a237e; }
-        .form-label { font-weight: 500; color: #33425e; }
+
+        /* Mengubah tinggi map agar tidak memenuhi layar */
+        #map {
+            width: 100%;
+            height: 650px; /* Atur tinggi peta di sini */
+            border-radius: 8px;
+        }
+
+        .map-wrapper {
+            position: relative;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #1a237e;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #33425e;
+        }
+
+        /* Styling untuk area filter */
+        .filter-area {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            height: 100%;
+        }
+
         .loader {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            border: 8px solid #f3f3f3; border-radius: 50%; border-top: 8px solid #1a237e;
-            width: 60px; height: 60px; animation: spin 1s linear infinite;
-            display: none; z-index: 1000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #1a237e;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            display: none;
+            z-index: 1000;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     @include('includes.header')
-    <div class="main-container">
-        <aside class="filter-sidebar">
-            <h3 class="fw-bold mb-4" style="color: #1a237e;">Filter Peta</h3>
-            <ul class="nav nav-pills nav-fill mb-4" id="petaTab" role="tablist">
-                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#peta-tower" type="button">Peta Tower</button></li>
-                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#peta-zona" type="button">Peta Zona</button></li>
-            </ul>
-            <div class="tab-content" id="petaTabContent">
-                <div class="tab-pane fade show active" id="peta-tower" role="tabpanel">
-                    <form id="formPetaTower">
-                        <div class="mb-3">
-                            <label for="provider" class="form-label">Provider</label>
-                            <select class="form-select" id="provider">
-                                <option value="semua">Semua Provider</option>
-                                @foreach($providers as $provider)
-                                    <option value="{{ $provider->provider }}">{{ $provider->provider }}</option>
-                                @endforeach
-                            </select>
+
+    <main class="py-5">
+        <div class="container">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        {{-- KOLOM FILTER KIRI --}}
+                        <div class="col-lg-3">
+                            <div class="filter-area">
+                                <h3 class="fw-bold mb-4" style="color: #1a237e;">Filter Peta</h3>
+                                <ul class="nav nav-pills nav-fill mb-4" id="petaTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#peta-tower" type="button">Peta Tower</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#peta-zona" type="button">Peta Zona</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="petaTabContent">
+                                    <div class="tab-pane fade show active" id="peta-tower" role="tabpanel">
+                                        <form id="formPetaTower">
+                                            <div class="mb-3">
+                                                <label for="provider" class="form-label">Provider</label>
+                                                <select class="form-select" id="provider">
+                                                    <option value="semua">Semua Provider</option>
+                                                    @foreach($providers as $provider)
+                                                        <option value="{{ $provider->provider }}">{{ $provider->provider }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kecamatanTower" class="form-label">Kecamatan</label>
+                                                <select class="form-select" id="kecamatanTower">
+                                                    <option value="semua">Semua Kecamatan</option>
+                                                    @foreach($kecamatans as $kecamatan)
+                                                        <option value="{{ $kecamatan->kecamatan }}">{{ $kecamatan->kecamatan }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary fw-bold" style="background-color: #3f51b5; border:none;">Tampilkan Peta</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="peta-zona" role="tabpanel">
+                                        <p class="text-center text-muted">Fitur Peta Zona sedang dalam pengembangan.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="kecamatanTower" class="form-label">Kecamatan</label>
-                            <select class="form-select" id="kecamatanTower">
-                                <option value="semua">Semua Kecamatan</option>
-                                @foreach($kecamatans as $kecamatan)
-                                    <option value="{{ $kecamatan->kecamatan }}">{{ $kecamatan->kecamatan }}</option>
-                                @endforeach
-                            </select>
+
+                        {{-- KOLOM PETA KANAN --}}
+                        <div class="col-lg-9">
+                            <div class="map-wrapper">
+                                <div id="map"></div>
+                                <div id="mapLoader" class="loader"></div>
+                            </div>
                         </div>
-                        <div class="d-grid"><button type="submit" class="btn btn-primary fw-bold" style="background-color: #3f51b5; border:none;">Tampilkan Peta</button></div>
-                    </form>
-                </div>
-                <div class="tab-pane fade" id="peta-zona" role="tabpanel">
-                    <p class="text-center text-muted">Fitur Peta Zona sedang dalam pengembangan.</p>
+                    </div>
                 </div>
             </div>
-        </aside>
-        <main class="map-content">
-            <div id="map"></div>
-            <div id="mapLoader" class="loader"></div>
-        </main>
-    </div>
+        </div>
+    </main>
 
     @include('includes.footer')
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Script JavaScript Anda tidak perlu diubah dan akan tetap berfungsi
         document.addEventListener('DOMContentLoaded', function() {
             const map = L.map('map').setView([-2.16, 115.38], 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 
-            // **PERUBAHAN UTAMA DI SINI**
-            // Menggunakan L.featureGroup() alih-alih L.layerGroup()
             const markersLayer = L.featureGroup().addTo(map);
-
             const mapLoader = document.getElementById('mapLoader');
             const formPetaTower = document.getElementById('formPetaTower');
 
@@ -92,7 +142,7 @@
                     provider: document.getElementById('provider').value,
                     kecamatan: document.getElementById('kecamatanTower').value,
                 });
-                
+
                 fetch(`{{ route('peta.menara_data') }}?${params.toString()}`)
                     .then(response => response.json())
                     .then(dataMenara => {
@@ -118,7 +168,7 @@
                         if (markersLayer.getLayers().length > 0) {
                             map.fitBounds(markersLayer.getBounds());
                         }
-                        
+
                         mapLoader.style.display = 'none';
                     })
                     .catch(error => {
@@ -131,4 +181,3 @@
     </script>
 </body>
 </html>
-

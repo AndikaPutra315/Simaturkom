@@ -74,17 +74,20 @@
                                 <option value="{{ $kecamatan->kecamatan }}" @if(request('kecamatan') == $kecamatan->kecamatan) selected @endif>{{ $kecamatan->kecamatan }}</option>
                             @endforeach
                         </select>
+
+                        {{-- DITAMBAHKAN: Kotak pencarian --}}
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Cari data..." value="{{ request('search') }}">
+                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
                     </form>
                     <div class="action-buttons">
                         <a href="{{ route('suadmin.datamenara.index') }}" class="btn-custom btn-refresh">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </a>
-
-                        {{-- HANYA BAGIAN INI YANG DIUBAH DARI <button> MENJADI <a> --}}
                         <a href="{{ route('suadmin.datamenara.pdf', request()->query()) }}" class="btn-custom btn-pdf" target="_blank">
                             <i class="fas fa-file-pdf"></i> Generate PDF
                         </a>
-
                         <a href="{{ route('suadmin.datamenara.create') }}" class="btn-custom btn-add">
                             <i class="fas fa-plus"></i>Tambah Data
                         </a>
@@ -157,7 +160,6 @@
             </div>
         </div>
     </main>
-
     @include('includes.footer')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>

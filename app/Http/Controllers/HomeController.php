@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Storage; // Pastikan ini ada
 
 class HomeController extends Controller
 {
-    // ... (metode index(), getChartData(), dataMenara(), dll. Anda tetap sama) ...
-
     public function index()
     {
         $chartPemilikData = DataMenara::query()
@@ -58,20 +56,35 @@ class HomeController extends Controller
         return response()->json($chartData);
     }
 
+    /**
+     * DIUBAH: Menampilkan halaman data menara dengan filter DAN PENCARIAN.
+     */
     public function dataMenara(Request $request)
     {
         $query = DataMenara::query();
 
+        // Logika Pencarian Baru
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
+
+        // Logika filter yang sudah ada
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
-
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        $menaraData = $query->latest()->paginate(10);
-        $menaraData->appends($request->only(['provider', 'kecamatan']));
+        // Paginasi diubah agar menyertakan semua parameter (filter & search)
+        $menaraData = $query->latest()->paginate(10)->withQueryString();
 
         $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
@@ -89,6 +102,17 @@ class HomeController extends Controller
     {
         $query = DataMenara::query();
 
+        // Logika filter dan pencarian ditambahkan ke PDF juga
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
@@ -106,23 +130,15 @@ class HomeController extends Controller
         return $pdf->download($fileName);
     }
 
-    /**
-     * Melacak jumlah lihat dan mengarahkan ke file PDF.
-     */
     public function trackRegulasiView(Regulasi $regulasi)
     {
         $regulasi->increment('view_count');
-        // Gunakan Storage::disk('public') untuk URL yang benar
         return redirect()->to(Storage::disk('public')->url($regulasi->file_path));
     }
 
-    /**
-     * PERBAIKAN: Melacak jumlah unduh dan memulai download file.
-     */
     public function trackRegulasiDownload(Regulasi $regulasi)
     {
         $regulasi->increment('download_count');
-        // Secara eksplisit gunakan disk 'public' untuk men-download
         return Storage::disk('public')->download($regulasi->file_path, $regulasi->nama_file_asli);
     }
 }
