@@ -8,15 +8,14 @@ use App\Models\Regulasi;
 use App\Models\HotspotData;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage; // Pastikan ini ada
 
 class HomeController extends Controller
 {
-    /**
-     * Menampilkan halaman utama dengan data awal untuk chart.
-     */
+    // ... (metode index(), getChartData(), dataMenara(), dll. Anda tetap sama) ...
+
     public function index()
     {
-        // Query awal untuk chart (Semua Kecamatan)
         $chartPemilikData = DataMenara::query()
             ->select('provider', DB::raw('count(*) as total'))
             ->groupBy('provider')
@@ -27,19 +26,15 @@ class HomeController extends Controller
             'labels' => $chartPemilikData->pluck('provider'),
             'data' => $chartPemilikData->pluck('total'),
         ];
-        
-        $totalMenara = DataMenara::count();
-        $rencanaPembangunan = 12;
 
-        // Mengambil daftar kecamatan untuk filter dropdown
+        $totalMenara = DataMenara::count();
+        $rencanaPembangunan = 12; // Data statis
+
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
 
         return view('pages.home', compact('initialChartData', 'totalMenara', 'rencanaPembangunan', 'kecamatans'));
     }
 
-    /**
-     * BARU: Method untuk menyediakan data chart via AJAX.
-     */
     public function getChartData(Request $request)
     {
         $kecamatan = $request->query('kecamatan');
@@ -49,14 +44,12 @@ class HomeController extends Controller
             ->groupBy('provider')
             ->orderBy('total', 'desc');
 
-        // Terapkan filter kecamatan jika bukan 'semua'
         if ($kecamatan && $kecamatan !== 'semua') {
             $query->where('kecamatan', $kecamatan);
         }
 
         $data = $query->get();
 
-        // Siapkan data untuk dikirim sebagai JSON
         $chartData = [
             'labels' => $data->pluck('provider'),
             'data' => $data->pluck('total'),
@@ -65,9 +58,6 @@ class HomeController extends Controller
         return response()->json($chartData);
     }
 
-    /**
-     * Menampilkan halaman data menara dengan data dari database dan filter.
-     */
     public function dataMenara(Request $request)
     {
         $query = DataMenara::query();
@@ -75,7 +65,7 @@ class HomeController extends Controller
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
-        
+
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
         }
@@ -85,22 +75,16 @@ class HomeController extends Controller
 
         $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
-        
+
         return view('pages.datamenara', compact('menaraData', 'providers', 'kecamatans'));
     }
 
-    /**
-     * Menampilkan halaman regulasi.
-     */
     public function regulasi()
     {
         $regulasiData = Regulasi::latest()->get();
         return view('pages.regulasi', ['regulasiData' => $regulasiData]);
     }
-    
-    /**
-     * Method untuk membuat dan men-download PDF Data Menara.
-     */
+
     public function generateMenaraPDF(Request $request)
     {
         $query = DataMenara::query();
@@ -115,10 +99,30 @@ class HomeController extends Controller
         $menaraData = $query->latest()->get();
 
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData'));
-        $pdf->setPaper('a4', 'landscape'); 
+        $pdf->setPaper('a4', 'landscape');
 
         $fileName = 'data-menara-telekomunikasi-' . date('Y-m-d') . '.pdf';
-        
+
         return $pdf->download($fileName);
+    }
+
+    /**
+     * Melacak jumlah lihat dan mengarahkan ke file PDF.
+     */
+    public function trackRegulasiView(Regulasi $regulasi)
+    {
+        $regulasi->increment('view_count');
+        // Gunakan Storage::disk('public') untuk URL yang benar
+        return redirect()->to(Storage::disk('public')->url($regulasi->file_path));
+    }
+
+    /**
+     * PERBAIKAN: Melacak jumlah unduh dan memulai download file.
+     */
+    public function trackRegulasiDownload(Regulasi $regulasi)
+    {
+        $regulasi->increment('download_count');
+        // Secara eksplisit gunakan disk 'public' untuk men-download
+        return Storage::disk('public')->download($regulasi->file_path, $regulasi->nama_file_asli);
     }
 }

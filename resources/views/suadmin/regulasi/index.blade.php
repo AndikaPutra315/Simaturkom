@@ -45,26 +45,32 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>#</th>
                                     <th>Nama Dokumen</th>
-                                    <th>File</th>
+                                    <th class="text-center">Dilihat</th>
+                                    <th class="text-center">Diunduh</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- Menggunakan @forelse untuk loop data dari controller --}}
                                 @forelse ($regulasi as $item)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->nama_dokumen }}</td>
                                         <td>
-                                            <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank">{{ $item->nama_file_asli }}</a>
+                                            {{-- Link Lihat sekarang mengarah ke rute pelacakan --}}
+                                            <a href="{{ route('regulasi.view.public', $item->id) }}" target="_blank">{{ $item->nama_dokumen }}</a>
+                                            <small class="d-block text-muted">{{ $item->nama_file_asli }}</small>
                                         </td>
+                                        {{-- Menampilkan jumlah view dari database --}}
+                                        <td class="text-center">{{ $item->view_count }}</td>
+                                        {{-- Menampilkan jumlah download dari database --}}
+                                        <td class="text-center">{{ $item->download_count }}</td>
                                         <td class="text-center">
+                                            {{-- Tombol Download khusus admin --}}
+                                            <a href="{{ route('suadmin.regulasi.download', $item->id) }}" class="btn btn-success btn-sm" title="Download">
+                                                <i class="fas fa-download"></i>
+                                            </a>
                                             <a href="{{ route('suadmin.regulasi.edit', $item->id) }}" class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            {{-- PERUBAHAN UTAMA DI SINI: action form diperbaiki --}}
                                             <form action="{{ route('suadmin.regulasi.destroy', $item->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')

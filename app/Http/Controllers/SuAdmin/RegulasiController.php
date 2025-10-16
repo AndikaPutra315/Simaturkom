@@ -15,8 +15,8 @@ class RegulasiController extends Controller
     public function index()
     {
         // 2. Ambil semua data regulasi dari database, urutkan dari yang terbaru
-        $regulasi = Regulasi::latest()->paginate(10); 
-        
+        $regulasi = Regulasi::latest()->paginate(10);
+
         // 3. Kirim data '$regulasi' ke view
         return view('suadmin.regulasi.index', compact('regulasi'));
     }
@@ -96,7 +96,7 @@ class RegulasiController extends Controller
     {
         // Hapus file dari storage
         Storage::disk('public')->delete($regulasi->file_path);
-        
+
         // Hapus data dari database
         $regulasi->delete();
 

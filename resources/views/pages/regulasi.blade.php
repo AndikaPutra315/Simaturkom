@@ -30,7 +30,7 @@
         .card-footer {
             background-color: #f8f9fc;
         }
-        .btn-outline-primary, .btn-outline-success {
+        .btn-outline-primary, .btn-primary {
             font-weight: 500;
         }
     </style>
@@ -48,7 +48,6 @@
             </div>
 
             <div class="row g-4">
-                {{-- PERUBAHAN UTAMA: Loop dinamis dari database --}}
                 @forelse ($regulasiData as $dokumen)
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 d-flex flex-column">
@@ -56,11 +55,13 @@
                                 <h5 class="card-title">{{ $dokumen->nama_dokumen }}</h5>
                             </div>
                             <div class="card-footer d-flex gap-2">
-                                <a href="{{ asset('storage/' . $dokumen->file_path) }}" class="btn btn-outline-primary w-100" download="{{ $dokumen->nama_file_asli }}">
-                                    <i class="fas fa-download me-2"></i> Download
-                                </a>
-                                <a href="{{ asset('storage/' . $dokumen->file_path) }}" class="btn btn-outline-success w-100" target="_blank">
+                                {{-- DIUBAH: Link sekarang mengarah ke rute pelacakan --}}
+                                <a href="{{ route('regulasi.view.public', $dokumen->id) }}" class="btn btn-outline-primary w-100" target="_blank">
                                     <i class="fas fa-eye me-2"></i> Lihat
+                                </a>
+                                {{-- DIUBAH: Link sekarang mengarah ke rute pelacakan --}}
+                                <a href="{{ route('regulasi.download.public', $dokumen->id) }}" class="btn btn-primary w-100">
+                                    <i class="fas fa-download me-2"></i> Download
                                 </a>
                             </div>
                         </div>

@@ -28,6 +28,10 @@ Route::get('/datamenara', [HomeController::class, 'dataMenara'])->name('datamena
 Route::get('/datamenara/pdf', [HomeController::class, 'generateMenaraPDF'])->name('datamenara.pdf');
 
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
+// RUTE BARU: Untuk melacak tampilan & unduhan regulasi oleh publik
+Route::get('/regulasi/{regulasi}/view', [HomeController::class, 'trackRegulasiView'])->name('regulasi.view.public');
+Route::get('/regulasi/{regulasi}/download', [HomeController::class, 'trackRegulasiDownload'])->name('regulasi.download.public');
+
 
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 Route::get('/hotspot/autocomplete', [HotspotController::class, 'autocomplete'])->name('hotspot.autocomplete');
@@ -57,6 +61,9 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     // Rute PDF untuk Admin
     Route::get('/datamenara/pdf', [DataMenaraController::class, 'generatePDF'])->name('datamenara.pdf');
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
+    // RUTE BARU: Untuk melacak unduhan regulasi oleh admin
+    Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
+
 
     // Rute Resource untuk Admin
     Route::resource('datamenara', DataMenaraController::class);
@@ -64,4 +71,3 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     Route::resource('hotspot', AdminHotspotController::class);
     Route::resource('users', UserManagementController::class);
 });
-
