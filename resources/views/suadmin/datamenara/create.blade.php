@@ -9,28 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f7fc;
-            font-family: 'Poppins', sans-serif;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-        }
-        .form-card-header .title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #1a237e;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in-up {
-            animation: fadeInUp 0.5s ease-out forwards;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
     @include('includes.header')

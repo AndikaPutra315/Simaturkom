@@ -9,39 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
-        main { flex: 1; padding: 40px 0; }
-        .container-fluid { max-width: 1800px; margin: 0 auto; padding: 0 30px; }
-        .content-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07); overflow: hidden; }
-        .card-header { padding: 25px 30px; border-bottom: 1px solid #eef2f9; }
-        .card-header h1 { margin: 0; font-size: 1.75rem; font-weight: 600; color: #1a237e; }
-        .card-header p { margin: 5px 0 0 0; color: #66789a; font-size: 0.95rem; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 20px 30px; gap: 15px; }
-        .filter-group { display: flex; gap: 15px; align-items: center; }
-        .filter-group select { padding: 10px 15px; border: 1px solid #dcdfe6; border-radius: 6px; font-size: 0.9rem; }
-        .action-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-custom { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; text-decoration: none; border: none; }
-        .btn-custom i { margin-right: 8px; }
-        .btn-refresh { background-color: #1a237e; color: white; }
-        .btn-refresh:hover { background-color: #151c68; color: white; }
-        .btn-pdf { background-color: #c82333; color: white; }
-        .btn-pdf:hover { background-color: #a21b29; color: white; }
-        .btn-add { background-color: #0d6efd; color: white; }
-        .btn-add:hover { background-color: #0b5ed7; color: white; }
-        .table-responsive { width: 100%; overflow-x: auto; }
-        .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        .data-table th, .data-table td { padding: 15px 20px; text-align: left; font-size: 0.9rem; vertical-align: middle; }
-        .data-table thead { background-color: #f8f9fc; }
-        .data-table th { font-weight: 600; color: #33425e; text-transform: uppercase; letter-spacing: 0.5px; }
-        .data-table tbody tr { border-bottom: 1px solid #eef2f9; }
-        .data-table tbody tr:hover { background-color: #f4f7fc; }
-        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 15px; font-weight: 500; font-size: 0.8rem; text-transform: capitalize; }
-        .status-aktif { background-color: #e7f5e8; color: #28a745; }
-        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
-        .table-footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-top: 1px solid #eef2f9; }
-        .entries-info { color: #66789a; font-size: 0.9rem; }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
     @include('includes.header')
