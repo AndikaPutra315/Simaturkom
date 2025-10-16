@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Suadmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Regulasi; // 1. Import model Regulasi
+use App\Models\Regulasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,10 +14,7 @@ class RegulasiController extends Controller
      */
     public function index()
     {
-        // 2. Ambil semua data regulasi dari database, urutkan dari yang terbaru
         $regulasi = Regulasi::latest()->paginate(10);
-
-        // 3. Kirim data '$regulasi' ke view
         return view('suadmin.regulasi.index', compact('regulasi'));
     }
 
@@ -102,5 +99,15 @@ class RegulasiController extends Controller
 
         return redirect()->route('suadmin.regulasi.index')
                          ->with('success', 'Dokumen regulasi berhasil dihapus.');
+    }
+
+    /**
+     * DITAMBAHKAN: Melacak jumlah unduh dan memulai download file.
+     */
+    public function trackDownload(Regulasi $regulasi)
+    {
+        $regulasi->increment('download_count');
+
+        return Storage::disk('public')->download($regulasi->file_path, $regulasi->nama_file_asli);
     }
 }
