@@ -16,14 +16,27 @@ class DataMenaraController extends Controller
     {
         $query = DataMenara::query();
 
+        // Logika filter yang sudah ada
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
-
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
         }
 
+        // DITAMBAHKAN: Logika untuk menangani input pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
+
+        // Paginasi diubah agar menyertakan semua parameter (filter & search)
         $menara = $query->latest()->paginate(10)->withQueryString();
 
         $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
@@ -119,10 +132,21 @@ class DataMenaraController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
+        // DITAMBAHKAN: Logika pencarian untuk PDF
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
+
         $menaraData = $query->get();
         $title = 'Laporan Data Menara Telekomunikasi';
 
-        // DIUBAH: Variabel yang dikirim disesuaikan
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData', 'title'));
 
         return $pdf->stream('laporan-data-menara.pdf');
