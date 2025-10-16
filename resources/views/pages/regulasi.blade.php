@@ -7,33 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f4f7fc;
-            font-family: 'Poppins', sans-serif;
-        }
-        .card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            border: none;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        .card-title {
-            color: #1a237e;
-            font-weight: 600;
-        }
-        .card-footer {
-            background-color: #f8f9fc;
-        }
-        .btn-outline-primary, .btn-primary {
-            font-weight: 500;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/regulasi.css') }}">
 </head>
 <body>
     @include('includes.header')

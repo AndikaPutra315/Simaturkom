@@ -1,6 +1,15 @@
 <style>
-    /* CSS Anda sudah bagus dan tidak perlu diubah */
-    .header-nav { background-color: #ffffff; padding: 0.75rem 2rem; border-bottom: 1px solid #e7e7e7; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif; }
+    /* -- CSS ASLI ANDA -- */
+    .header-nav {
+        background-color: #ffffff;
+        padding: 0.75rem 2rem;
+        border-bottom: 1px solid #e7e7e7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: sans-serif;
+        position: relative; /* Diperlukan untuk menu mobile */
+    }
     .header-left { display: flex; align-items: center; }
     .logo-group { display: flex; align-items: center; border-right: 2px solid #e0e0e0; padding-right: 20px; margin-right: 20px; }
     .logo-group img { height: 45px; width: auto; margin-right: 15px; }
@@ -9,9 +18,8 @@
     .site-name-link { text-decoration: none; }
     .header-menu { list-style-type: none; margin: 0; padding: 0; display: flex; }
     .header-menu li { margin-left: 20px; }
-    .header-menu a { text-decoration: none; color: #555; font-weight: 500; padding: 8px 12px; border-radius: 5px; transition: background-color 0.3s, color: 0.3s; }
+    .header-menu a { text-decoration: none; color: #555; font-weight: 500; padding: 8px 12px; border-radius: 5px; transition: background-color 0.3s, color 0.3s; }
     .header-menu a:hover, .header-menu a.active { background-color: #007bff; color: #ffffff; }
-
     .admin-bar { background-color: #1a237e; color: white; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif; }
     .admin-bar .admin-info { font-weight: 600; }
     .admin-bar .admin-menu { display: flex; align-items: center; gap: 20px; }
@@ -20,12 +28,78 @@
     .admin-bar .admin-menu a.active { background-color: rgba(255, 255, 255, 0.15); color: #ffab00; }
     .admin-bar .btn-logout { background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
     .admin-bar .btn-logout:hover { background-color: white; color: #1a237e; }
+
+    /* -- CSS BARU UNTUK RESPONSIVITAS -- */
+    .mobile-menu-toggle {
+        display: none; /* Sembunyikan di desktop */
+        font-size: 1.5rem;
+        color: #333;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Tampilan Tablet & Mobile */
+    @media (max-width: 992px) {
+        .header-nav {
+            padding: 0.75rem 1rem;
+        }
+        .header-menu {
+            display: none; /* Sembunyikan menu desktop */
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .header-menu.active {
+            display: flex; /* Tampilkan menu saat kelas 'active' ditambahkan */
+        }
+        .header-menu li {
+            margin: 0;
+            width: 100%;
+        }
+        .header-menu a {
+            padding: 15px 20px;
+            border-radius: 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: block;
+        }
+        .mobile-menu-toggle {
+            display: block; /* Tampilkan tombol hamburger */
+        }
+        .admin-bar {
+            flex-direction: column;
+            gap: 10px;
+            padding: 0.75rem 1rem;
+        }
+        .admin-menu {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    /* Tampilan Mobile Kecil */
+    @media (max-width: 576px) {
+        .logo-group {
+            padding-right: 10px;
+            margin-right: 10px;
+        }
+        .logo-group img {
+            height: 35px;
+        }
+        .site-name {
+            font-size: 1.2rem;
+        }
+    }
 </style>
 
 <header>
-    {{-- Navbar Utama dengan Link Cerdas --}}
     <nav class="header-nav">
-        {{-- ... Konten Navbar Anda ... --}}
         <div class="header-left">
             <div class="logo-group">
                 <img src="{{ asset('images/logotabalong.png') }}" alt="Logo Kabupaten Tabalong">
@@ -36,7 +110,12 @@
                 <span class="site-name">SIMATURKOM</span>
             </a>
         </div>
-        <ul class="header-menu">
+        
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <ul class="header-menu" id="headerMenu">
             <li><a href="{{ Auth::check() ? route('suadmin.dashboard') : route('home') }}" class="{{ Request::routeIs('home', 'suadmin.dashboard') ? 'active' : '' }}">Home</a></li>
             <li><a href="{{ Auth::check() ? route('suadmin.hotspot.index') : route('hotspot.index') }}" class="{{ Request::routeIs('hotspot.index', 'suadmin.hotspot.*') ? 'active' : '' }}">Hotspot</a></li>
             <li><a href="{{ Auth::check() ? route('suadmin.regulasi.index') : route('regulasi') }}" class="{{ Request::routeIs('regulasi', 'suadmin.regulasi.*') ? 'active' : '' }}">Regulasi</a></li>
@@ -46,7 +125,6 @@
         </ul>
     </nav>
 
-    {{-- Admin Bar akan tetap muncul jika admin login --}}
     @auth
         <div class="admin-bar">
             <div class="admin-info">
@@ -54,19 +132,36 @@
             </div>
             <div class="admin-menu">
                 <a href="{{ route('suadmin.dashboard') }}" class="{{ Request::routeIs('suadmin.dashboard') ? 'active' : '' }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-
-                {{-- Tampilkan menu ini HANYA jika role user adalah 'suadmin' --}}
                 @if (Auth::user()->role == 'suadmin')
                     <a href="{{ route('suadmin.users.index') }}" class="{{ Request::routeIs('suadmin.users.*') ? 'active' : '' }}"><i class="fas fa-users-cog me-2"></i>Manajemen Admin</a>
                 @endif
-
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn-logout ms-3">
-                        <i class="fas fa-sign-out-alt me-2"></i> Log Out
-                    </button>
+                    <button type="submit" class="btn-logout ms-3"><i class="fas fa-sign-out-alt me-2"></i> Log Out</button>
                 </form>
             </div>
         </div>
     @endauth
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButton = document.getElementById('mobileMenuToggle');
+        const menu = document.getElementById('headerMenu');
+        const icon = toggleButton.querySelector('i');
+
+        toggleButton.addEventListener('click', function () {
+            // Toggle kelas 'active' pada menu untuk menampilkan/menyembunyikan
+            menu.classList.toggle('active');
+
+            // Ganti ikon hamburger menjadi 'X' dan sebaliknya
+            if (menu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    });
+</script>
