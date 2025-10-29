@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,23 +20,28 @@
                         @method('PUT')
                         <div class="mb-3">
                             <label for="nama_tempat" class="form-label">Nama Tempat</label>
-                            <input type="text" class="form-control" id="nama_tempat" name="nama_tempat" value="{{ $hotspot->nama_tempat }}" required>
+                            <input type="text" class="form-control" id="nama_tempat" name="nama_tempat" value="{{ old('nama_tempat', $hotspot->nama_tempat) }}" required>
                         </div>
                         <div class="mb-3">
                             <label for="alamat" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="alamat" name="alamat" rows="3" required>{{ $hotspot->alamat }}</textarea>
+                            <textarea class="form-control" id="alamat" name="alamat" rows="3" required>{{ old('alamat', $hotspot->alamat) }}</textarea>
                         </div>
                         <div class="row">
                              <div class="col-md-6 mb-3">
                                 <label for="tahun" class="form-label">Tahun</label>
-                                <input type="number" class="form-control" id="tahun" name="tahun" value="{{ $hotspot->tahun }}" required placeholder="Contoh: 2024">
+                                <input type="number" class="form-control" id="tahun" name="tahun" value="{{ old('tahun', $hotspot->tahun) }}" required placeholder="Contoh: 2024" min="1900" max="{{ date('Y') + 1 }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="keterangan" class="form-label">Keterangan</label>
-                                {{-- PERUBAHAN DARI INPUT MENJADI SELECT --}}
+                                {{-- PERUBAHAN: Input menjadi Select Dropdown --}}
                                 <select class="form-select" id="keterangan" name="keterangan" required>
-                                    <option value="SKPD" @if($hotspot->keterangan == 'SKPD') selected @endif>SKPD</option>
-                                    <option value="RTH/Layanan Publik" @if($hotspot->keterangan == 'RTH/Layanan Publik') selected @endif>RTH/Layanan Publik</option>
+                                    <option value="">Pilih Keterangan...</option>
+                                    <option value="SKPD" @selected(old('keterangan', $hotspot->keterangan) == 'SKPD')>SKPD</option>
+                                    <option value="RTH" @selected(old('keterangan', $hotspot->keterangan) == 'RTH')>RTH</option>
+                                    <option value="Ruang Publik" @selected(old('keterangan', $hotspot->keterangan) == 'Ruang Publik')>Ruang Publik</option>
+                                    <option value="Ruang Pendidikan" @selected(old('keterangan', $hotspot->keterangan) == 'Ruang Pendidikan')>Ruang Pendidikan</option>
+                                    <option value="Fasilitas Umum" @selected(old('keterangan', $hotspot->keterangan) == 'Fasilitas Umum')>Fasilitas Umum</option>
+                                    <option value="Starlink" @selected(old('keterangan', $hotspot->keterangan) == 'Starlink')>Starlink</option>
                                 </select>
                             </div>
                         </div>

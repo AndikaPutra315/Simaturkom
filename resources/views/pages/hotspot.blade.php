@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{-- Memanggil file CSS eksternal --}}
     <link rel="stylesheet" href="{{ asset('css/hotspot.css') }}">
+    
 </head>
 
 <body>
@@ -20,7 +21,7 @@
             <div class="content-card">
                 <div class="card-header">
                     <h1>Data Hotspot</h1>
-                    <p>Daftar titik hotspot SKPD dan hotspot publik gratis di Kabupaten Tabalong.</p>
+                    <p>Daftar titik hotspot SKPD, layanan gratis, dan Starlink Akses di Kabupaten Tabalong.</p>
                 </div>
 
                 <div class="toolbar">
@@ -43,10 +44,17 @@
                 </div>
 
                 <div class="tabs-container">
+                    {{-- Tab SKPD --}}
                     <a href="{{ route('hotspot.index', ['kategori' => 'skpd', 'search' => $searchTerm ?? '']) }}"
                         class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
+
+                    {{-- Tab Layanan Gratis --}}
                     <a href="{{ route('hotspot.index', ['kategori' => 'free', 'search' => $searchTerm ?? '']) }}"
-                        class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Hotspot RTH/Layanan Publik</a>
+                        class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Layanan Internet Gratis</a>
+
+                    {{-- Tab Starlink Akses --}}
+                    <a href="{{ route('hotspot.index', ['kategori' => 'starlink', 'search' => $searchTerm ?? '']) }}"
+                        class="tab-link {{ $kategoriAktif == 'starlink' ? 'active' : '' }}">Starlink Akses</a>
                 </div>
 
                 <div class="table-responsive">
@@ -70,7 +78,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" style="text-align: center; padding: 20px;">
-                                        Tidak ada data hotspot yang ditemukan.
+                                        Tidak ada data hotspot yang ditemukan untuk kategori ini.
                                     </td>
                                 </tr>
                             @endforelse
@@ -100,49 +108,47 @@
             const searchInput = document.getElementById('searchInput');
             const suggestionsContainer = document.getElementById('suggestions');
             const searchForm = document.getElementById('searchForm');
-            let debounceTimer; // Variabel untuk menyimpan timer
+            let debounceTimer;
 
             searchInput.addEventListener('input', function() {
                 const term = this.value;
-
-                // Hapus timer yang ada setiap kali pengguna mengetik
                 clearTimeout(debounceTimer);
-
                 if (term.length < 2) {
                     suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'none'; // Sembunyikan
                     return;
                 }
-
-                // Buat timer baru. Kode di dalamnya hanya akan berjalan jika pengguna berhenti mengetik selama 300ms
                 debounceTimer = setTimeout(() => {
                     fetch(`{{ route('hotspot.autocomplete') }}?term=${term}`)
                         .then(response => response.json())
                         .then(data => {
                             suggestionsContainer.innerHTML = '';
-                            data.forEach(suggestion => {
-                                const item = document.createElement('div');
-                                item.classList.add('suggestion-item');
-                                item.textContent = suggestion;
-
-                                item.addEventListener('click', function() {
-                                    searchInput.value = this.textContent;
-                                    suggestionsContainer.innerHTML = '';
-                                    searchForm.submit();
+                            if (data.length > 0) {
+                                suggestionsContainer.style.display = 'block'; // Tampilkan
+                                data.forEach(suggestion => {
+                                    const item = document.createElement('div');
+                                    item.classList.add('suggestion-item');
+                                    item.textContent = suggestion;
+                                    item.addEventListener('click', function() {
+                                        searchInput.value = this.textContent;
+                                        suggestionsContainer.style.display = 'none'; // Sembunyikan
+                                        searchForm.submit();
+                                    });
+                                    suggestionsContainer.appendChild(item);
                                 });
-
-                                suggestionsContainer.appendChild(item);
-                            });
+                            } else {
+                                suggestionsContainer.style.display = 'none'; // Sembunyikan
+                            }
                         });
-                }, 300); // Jeda 300 milidetik
+                }, 300);
             });
 
             document.addEventListener('click', function(e) {
                 if (!searchForm.contains(e.target)) {
-                    suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'none'; // Sembunyikan
                 }
             });
         });
     </script>
 </body>
-
 </html>

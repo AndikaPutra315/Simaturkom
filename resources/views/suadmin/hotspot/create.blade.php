@@ -28,14 +28,19 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="tahun" class="form-label">Tahun</label>
-                                <input type="number" class="form-control" id="tahun" name="tahun" required placeholder="Contoh: 2024">
+                                <input type="number" class="form-control" id="tahun" name="tahun" required placeholder="Contoh: 2024" min="1900" max="{{ date('Y') + 1 }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="keterangan" class="form-label">Keterangan</label>
-                                {{-- PERUBAHAN DARI INPUT MENJADI SELECT --}}
+                                {{-- PERUBAHAN: Input menjadi Select Dropdown --}}
                                 <select class="form-select" id="keterangan" name="keterangan" required>
+                                    <option value="">Pilih Keterangan...</option>
                                     <option value="SKPD">SKPD</option>
-                                    <option value="RTH/Layanan Publik">RTH/Layanan Publik</option>
+                                    <option value="RTH">RTH</option>
+                                    <option value="Ruang Publik">Ruang Publik</option>
+                                    <option value="Ruang Pendidikan">Ruang Pendidikan</option>
+                                    <option value="Fasilitas Umum">Fasilitas Umum</option>
+                                    <option value="Starlink">Starlink</option>
                                 </select>
                             </div>
                         </div>

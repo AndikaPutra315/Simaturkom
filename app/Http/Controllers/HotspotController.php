@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\HotspotData;
-use Barryvdh\DomPDF\Facade\Pdf; // Import class PDF
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HotspotController extends Controller
 {
-    /**
-     * Menampilkan halaman data hotspot publik dengan filter kategori dan pencarian.
-     */
+    // Daftar keterangan yang masuk kategori 'Layanan Internet Gratis'
+    protected $kategoriLayananGratis = [
+        'RTH',
+        'Ruang Publik',
+        'Ruang Pendidikan',
+        'Fasilitas Umum',
+        // Tambahkan nilai lain jika perlu (misal: 'Ruang Terbuka Hijau')
+    ];
+
     public function index(Request $request)
     {
         $kategoriAktif = $request->query('kategori', 'skpd');
@@ -18,13 +24,16 @@ class HotspotController extends Controller
 
         $query = HotspotData::query();
 
+        // Filter Kategori
         if ($kategoriAktif == 'skpd') {
             $query->where('keterangan', 'SKPD');
-        } else {
-            // Kita perbaiki logikanya agar lebih spesifik
-            $query->where('keterangan', 'RTH/Layanan Publik');
+        } elseif ($kategoriAktif == 'starlink') {
+            $query->where('keterangan', 'Starlink');
+        } else { // Layanan Gratis
+            $query->whereIn('keterangan', $this->kategoriLayananGratis);
         }
 
+        // Filter Pencarian
         if ($searchTerm) {
             $query->where(function($q) use ($searchTerm) {
                 $q->where('nama_tempat', 'like', "%{$searchTerm}%")
@@ -33,66 +42,57 @@ class HotspotController extends Controller
             });
         }
 
-        $hotspots = $query->latest('tahun')->paginate(15);
+        // --- PERUBAHAN SORTING DI SINI ---
+        // Urutkan pertama berdasarkan Keterangan, lalu Tahun (ASC = Lama ke Baru)
+        $hotspots = $query->orderBy('keterangan', 'asc') // Kelompokkan berdasarkan Keterangan
+                          ->orderBy('tahun', 'asc')      // Urutkan berdasarkan Tahun (Lama ke Baru) di dalam kelompok
+                          ->paginate(15);
+        // --- AKHIR PERUBAHAN ---
+
         $hotspots->appends($request->only(['kategori', 'search']));
 
         return view('pages.hotspot', compact('hotspots', 'kategoriAktif', 'searchTerm'));
     }
 
-    /**
-     * Mengambil data autocomplete berdasarkan nama, alamat, atau tahun.
-     */
     public function autocomplete(Request $request)
     {
-        $searchTerm = $request->query('term');
-        
-        if (!$searchTerm) {
-            return response()->json([]);
-        }
-
-        $data = HotspotData::where('nama_tempat', 'LIKE', '%'. $searchTerm . '%')
-                           ->orWhere('alamat', 'LIKE', '%'. $searchTerm . '%')
-                           ->orWhere('tahun', 'LIKE', '%'. $searchTerm . '%')
-                           ->limit(10)
-                           ->distinct()
-                           ->pluck('nama_tempat');
-
-        return response()->json($data);
+       // ... method autocomplete tidak perlu diubah ...
     }
 
-    /**
-     * Method untuk membuat dan men-download PDF.
-     */
     public function generatePDF(Request $request)
     {
         $kategoriAktif = $request->query('kategori', 'skpd');
         $searchTerm = $request->query('search');
 
-        // Mengambil data dengan filter yang sama seperti di halaman index
         $query = HotspotData::query();
+
+        // Filter Kategori
         if ($kategoriAktif == 'skpd') {
-            $query->where('keterangan', 'SKPD');
-        } else {
-            $query->where('keterangan', 'RTH/Layanan Publik');
+             $query->where('keterangan', 'SKPD');
+        } elseif ($kategoriAktif == 'starlink') {
+              $query->where('keterangan', 'Starlink');
+        } else { // Layanan Gratis
+              $query->whereIn('keterangan', $this->kategoriLayananGratis);
         }
+
+        // Filter Pencarian
         if ($searchTerm) {
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('nama_tempat', 'like', "%{$searchTerm}%")
-                  ->orWhere('alamat', 'like', "%{$searchTerm}%")
-                  ->orWhere('tahun', 'like', "%{$searchTerm}%");
-            });
+             $query->where(function($q) use ($searchTerm) {
+                 $q->where('nama_tempat', 'like', "%{$searchTerm}%")
+                   ->orWhere('alamat', 'like', "%{$searchTerm}%")
+                   ->orWhere('tahun', 'like', "%{$searchTerm}%");
+             });
         }
         
-        // Ambil SEMUA data yang cocok (tanpa paginasi)
-        $hotspots = $query->latest('tahun')->get(); 
+        // --- PERUBAHAN SORTING DI SINI (Sama seperti di index) ---
+        $hotspots = $query->orderBy('keterangan', 'asc')
+                          ->orderBy('tahun', 'asc')
+                          ->get(); // Ambil semua data untuk PDF
+        // --- AKHIR PERUBAHAN ---
 
-        // Load view PDF dengan data
         $pdf = Pdf::loadView('pages.hotspot_pdf', compact('hotspots'));
-
-        // Buat nama file dinamis
-        $fileName = 'data-hotspot-' . date('Y-m-d') . '.pdf';
+        $fileName = 'data-hotspot-' . str_replace('/', '-', $kategoriAktif) . '-' . date('Y-m-d') . '.pdf';
         
-        // Download file PDF
         return $pdf->download($fileName);
     }
 }
