@@ -63,7 +63,7 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
     // RUTE BARU: Untuk melacak unduhan regulasi oleh admin
     Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
-
+    Route::post('/datamenara/import', [DataMenaraController::class, 'importExcel'])->name('datamenara.import');
 
     // Rute Resource untuk Admin
     Route::resource('datamenara', DataMenaraController::class);
