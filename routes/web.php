@@ -28,7 +28,6 @@ Route::get('/datamenara', [HomeController::class, 'dataMenara'])->name('datamena
 Route::get('/datamenara/pdf', [HomeController::class, 'generateMenaraPDF'])->name('datamenara.pdf');
 
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
-// RUTE BARU: Untuk melacak tampilan & unduhan regulasi oleh publik
 Route::get('/regulasi/{regulasi}/view', [HomeController::class, 'trackRegulasiView'])->name('regulasi.view.public');
 Route::get('/regulasi/{regulasi}/download', [HomeController::class, 'trackRegulasiDownload'])->name('regulasi.download.public');
 
@@ -58,16 +57,22 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Rute PDF untuk Admin
+    // --- Data Menara ---
     Route::get('/datamenara/pdf', [DataMenaraController::class, 'generatePDF'])->name('datamenara.pdf');
-    Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
-    // RUTE BARU: Untuk melacak unduhan regulasi oleh admin
-    Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
-
-
-    // Rute Resource untuk Admin
     Route::resource('datamenara', DataMenaraController::class);
+
+    // --- Regulasi ---
+    Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::resource('regulasi', RegulasiController::class);
-    Route::resource('hotspot', AdminHotspotController::class);
+    
+    // --- Hotspot (URUTAN DIPERBAIKI) ---
+    // Rute spesifik harus diletakkan SEBELUM rute resource
+    Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
+    Route::get('/hotspot/import', [AdminHotspotController::class, 'showImportForm'])->name('hotspot.import.form');
+    Route::post('/hotspot/import', [AdminHotspotController::class, 'handleImport'])->name('hotspot.import.handle');
+    Route::resource('hotspot', AdminHotspotController::class); // Rute resource selalu di bagian akhir
+
+    // --- Users ---
     Route::resource('users', UserManagementController::class);
+
 });

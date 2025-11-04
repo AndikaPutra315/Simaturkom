@@ -5,13 +5,54 @@ namespace App\Http\Controllers\SuAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\HotspotData;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf; // <-- 1. Import class PDF
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\HotspotImport;
 
 class HotspotController extends Controller
 {
-    public function index()
+    // Daftar keterangan yang masuk kategori "Layanan Gratis"
+    protected $kategoriLayananGratis = [
+        'RTH',
+        'Ruang Publik',
+        'Ruang Pendidikan',
+        'Fasilitas Umum',
+    ];
+
+    public function index(Request $request)
     {
-        $hotspots = HotspotData::latest()->paginate(15);
+        $filterKeterangan = $request->query('filter_keterangan');
+        $searchTerm = $request->query('search');
+
+        $query = HotspotData::query();
+
+        // Logika filter
+        if ($filterKeterangan) {
+            if ($filterKeterangan == 'skpd') {
+                $query->where('keterangan', 'SKPD');
+            } elseif ($filterKeterangan == 'starlink') {
+                $query->where('keterangan', 'Starlink');
+            } elseif ($filterKeterangan == 'layanan_gratis') {
+                $query->whereIn('keterangan', $this->kategoriLayananGratis);
+            }
+        }
+
+        // Logika search
+        if ($searchTerm) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('nama_tempat', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat', 'like', "%{$searchTerm}%")
+                  ->orWhere('tahun', 'like', "%{$searchTerm}%")
+                  ->orWhere('keterangan', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $hotspots = $query->orderBy('keterangan', 'asc')
+                          ->orderBy('tahun', 'asc')
+                          ->paginate(15);
+
+        $hotspots->appends($request->all());
+
         return view('suadmin.hotspot.index', compact('hotspots'));
     }
 
@@ -28,11 +69,8 @@ class HotspotController extends Controller
             'tahun' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
             'keterangan' => 'required|string|max:255',
         ]);
-
         HotspotData::create($request->all());
-
-        return redirect()->route('suadmin.hotspot.index')
-                         ->with('success', 'Data hotspot baru berhasil ditambahkan.');
+        return redirect()->route('suadmin.hotspot.index')->with('success', 'Data hotspot baru berhasil ditambahkan.');
     }
 
     public function edit(HotspotData $hotspot)
@@ -48,37 +86,75 @@ class HotspotController extends Controller
             'tahun' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
             'keterangan' => 'required|string|max:255',
         ]);
-
         $hotspot->update($request->all());
-
-        return redirect()->route('suadmin.hotspot.index')
-                         ->with('success', 'Data hotspot berhasil diperbarui.');
+        return redirect()->route('suadmin.hotspot.index')->with('success', 'Data hotspot berhasil diperbarui.');
     }
 
     public function destroy(HotspotData $hotspot)
     {
         $hotspot->delete();
-
-        return redirect()->route('suadmin.hotspot.index')
-                         ->with('success', 'Data hotspot berhasil dihapus.');
+        return redirect()->route('suadmin.hotspot.index')->with('success', 'Data hotspot berhasil dihapus.');
     }
 
     /**
-     * BARU: Method untuk membuat dan men-download PDF dari halaman admin.
+     * PERBAIKAN: 'publicS' diubah menjadi 'public'
      */
-    public function generatePDF()
+    public function generatePDF(Request $request)
     {
-        // Ambil SEMUA data hotspot (tanpa paginasi)
-        $hotspots = HotspotData::latest('tahun')->get(); 
+        $filterKeterangan = $request->query('filter_keterangan');
+        $searchTerm = $request->query('search');
 
-        // Load view PDF dengan data (kita gunakan view yang sama dengan halaman publik)
+        $query = HotspotData::query();
+
+        // Terapkan logika filter yang sama
+        if ($filterKeterangan) {
+            if ($filterKeterangan == 'skpd') {
+                $query->where('keterangan', 'SKPD');
+            } elseif ($filterKeterangan == 'starlink') {
+                $query->where('keterangan', 'Starlink');
+            } elseif ($filterKeterangan == 'layanan_gratis') {
+                $query->whereIn('keterangan', $this->kategoriLayananGratis);
+            }
+        }
+
+        // Terapkan logika search yang sama
+        if ($searchTerm) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('nama_tempat', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat', 'like', "%{$searchTerm}%")
+                  ->orWhere('tahun', 'like', "%{$searchTerm}%")
+                  ->orWhere('keterangan', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Ambil SEMUA data yang cocok (tanpa paginasi)
+        $hotspots = $query->orderBy('keterangan', 'asc')
+                          ->orderBy('tahun', 'asc')
+                          ->get();
+                                
         $pdf = Pdf::loadView('pages.hotspot_pdf', compact('hotspots'));
-
-        // Buat nama file dinamis
         $fileName = 'data-hotspot-admin-' . date('Y-m-d') . '.pdf';
-        
-        // Download file PDF
         return $pdf->download($fileName);
     }
-}
 
+    public function showImportForm()
+    {
+        // Pastikan view ini ada atau hapus method ini jika menggunakan modal
+        // return view('suadmin.hotspot.import');
+    }
+
+    public function handleImport(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            Excel::import(new HotspotImport, $request->file('excel_file'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        }
+        
+        return redirect()->route('suadmin.hotspot.index')->with('success', 'Data hotspot berhasil diimpor.');
+    }
+}
