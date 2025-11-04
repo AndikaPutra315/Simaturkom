@@ -12,7 +12,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    
+
 </head>
 
 <body>
@@ -108,7 +108,6 @@
                             <button class="chart-tab-item" disabled>Chart Operator</button>
                         </div>
                         <div>
-                            <!-- PERUBAHAN HTML: Mengganti kelas Bootstrap dengan kelas custom -->
                             <button id="downloadChartBtn" class="btn-download-chart">
                                 <i class="fas fa-download"></i> Download Chart
                             </button>
@@ -138,10 +137,35 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
+            /**
+             * DITAMBAHKAN: Fungsi untuk menghasilkan daftar warna
+             * Ini akan membuat warna yang konsisten dan profesional
+             */
+            function generateBarColors(numColors) {
+                const colors = [];
+                const baseColors = [
+                    'rgba(243, 156, 18, 0.8)',  // Oranye
+                    'rgba(26, 35, 126, 0.8)',   // Biru Tua
+                    'rgba(63, 81, 181, 0.8)',   // Indigo
+                    'rgba(220, 53, 69, 0.8)',   // Merah
+                    'rgba(255, 193, 7, 0.8)',   // Kuning
+                    'rgba(0, 123, 255, 0.8)',  // Biru Cerah
+                    'rgba(25, 135, 84, 0.8)',   // Hijau
+                    'rgba(108, 117, 125, 0.8)', // Abu-abu
+                    'rgba(52, 172, 224, 0.8)',  // Biru Langit
+                ];
+                for (let i = 0; i < numColors; i++) {
+                    colors.push(baseColors[i % baseColors.length]); // Mengulang palet warna jika data lebih banyak
+                }
+                return colors;
+            }
+
             const initialChartData = {
                 labels: @json($initialChartData['labels']),
                 data: @json($initialChartData['data'])
             };
+
+            const initialColors = generateBarColors(initialChartData.data.length);
 
             Chart.register(ChartDataLabels);
 
@@ -153,7 +177,7 @@
                     datasets: [{
                         label: 'Jumlah',
                         data: initialChartData.data,
-                        backgroundColor: 'rgba(26, 35, 126, 0.8)',
+                        backgroundColor: initialColors,
                     }]
                 },
                 options: {
@@ -194,8 +218,13 @@
                 fetch(`{{ route('chart.data') }}?kecamatan=${selectedKecamatan}`)
                     .then(response => response.json())
                     .then(newData => {
+                        // DITAMBAHKAN: Hasilkan warna baru untuk data yang di-filter
+                        const newColors = generateBarColors(newData.data.length);
+
                         towerChart.data.labels = newData.labels;
                         towerChart.data.datasets[0].data = newData.data;
+                        // DITAMBAHKAN: Terapkan warna baru
+                        towerChart.data.datasets[0].backgroundColor = newColors;
                         towerChart.update();
                     });
             });
