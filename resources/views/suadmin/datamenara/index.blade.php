@@ -9,7 +9,55 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <style>
+        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
+        main { flex: 1; padding: 40px 0; }
+        .container-fluid { max-width: 1800px; padding: 0 30px; }
+        .content-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07); overflow: hidden; }
+        .card-header { padding: 25px 30px; border-bottom: 1px solid #eef2f9; }
+        .card-header h1 { margin: 0; font-size: 1.75rem; font-weight: 600; color: #1a237e; }
+        .card-header p { margin: 5px 0 0 0; color: #66789a; font-size: 0.95rem; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 20px 30px; gap: 15px; }
+        .filter-group { display: flex; gap: 15px; align-items: center; }
+        .filter-group select { padding: 10px 15px; border: 1px solid #dcdfe6; border-radius: 6px; font-size: 0.9rem; }
+        .action-buttons { display: flex; gap: 10px; align-items: center; }
+        /* Styling baru untuk tombol agar mirip dengan halaman publik */
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-custom i { margin-right: 8px; }
+        .btn-refresh { background-color: #1a237e; color: white; }
+        .btn-refresh:hover { background-color: #151c68; color: white; }
+        .btn-pdf { background-color: #c82333; color: white; }
+        .btn-pdf:hover { background-color: #a21b29; color: white; }
+        .btn-add { background-color: #0d6efd; color: white; }
+        .btn-add:hover { background-color: #0b5ed7; color: white; }
+
+        .btn-import { background-color: #198754; color: white; }
+        .btn-import:hover { background-color: #157347; color: white; }
+
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        .data-table th, .data-table td { padding: 15px 20px; text-align: left; font-size: 0.9rem; vertical-align: middle; }
+        .data-table thead { background-color: #f8f9fc; }
+        .data-table th { font-weight: 600; color: #33425e; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table tbody tr { border-bottom: 1px solid #eef2f9; }
+        .data-table tbody tr:hover { background-color: #f4f7fc; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 15px; font-weight: 500; font-size: 0.8rem; text-transform: capitalize; }
+        .status-aktif { background-color: #e7f5e8; color: #28a745; }
+        .status-nonaktif { background-color: #f8d7da; color: #721c24; }
+        .table-footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-top: 1px solid #eef2f9; }
+        .entries-info { color: #66789a; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
     @include('includes.header')
@@ -19,6 +67,13 @@
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
@@ -43,7 +98,6 @@
                             @endforeach
                         </select>
 
-                        {{-- DITAMBAHKAN: Kotak pencarian --}}
                         <div class="input-group">
                             <input type="text" class="form-control" name="search" placeholder="Cari data..." value="{{ request('search') }}">
                             <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
@@ -56,6 +110,11 @@
                         <a href="{{ route('suadmin.datamenara.pdf', request()->query()) }}" class="btn-custom btn-pdf" target="_blank">
                             <i class="fas fa-file-pdf"></i> Generate PDF
                         </a>
+
+                        <button type="button" class="btn-custom btn-import" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                            <i class="fas fa-file-excel"></i> Import Excel
+                        </button>
+
                         <a href="{{ route('suadmin.datamenara.create') }}" class="btn-custom btn-add">
                             <i class="fas fa-plus"></i>Tambah Data
                         </a>
@@ -128,6 +187,46 @@
             </div>
         </div>
     </main>
+
+    {{-- MODAL UNTUK UPLOAD EXCEL (SUDAH DIPERBARUI) --}}
+    <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="importExcelModalLabel">Upload Data Excel</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('suadmin.datamenara.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <p>Pilih file Excel (.xlsx atau .xls) untuk diimpor. Pastikan urutan dan format kolom sudah sesuai template.</p>
+
+                        {{-- DITAMBAHKAN: Link untuk download template --}}
+                        <div class="mb-3">
+                            <a href="{{ asset('files/excelcontoh.xlsx') }}" class="btn btn-outline-success btn-sm" download>
+                                <i class="fas fa-file-excel me-2"></i> Download Contoh Template
+                            </a>
+                        </div>
+
+                        <p class="mb-1"><small>Urutan kolom yang benar:</small></p>
+                        <small><code>Kode</code>, <code>Provider</code>, <code>Kelurahan</code>, <code>Kecamatan</code>, <code>Alamat</code>, <code>Longitude</code>, <code>Latitude</code>, <code>Status</code>, <code>Tinggi Tower</code></small>
+
+                        <hr>
+
+                        <div class="my-3">
+                            <label for="file_excel" class="form-label fw-bold">Pilih File untuk Di-upload:</label>
+                            <input class="form-control" type="file" name="file_excel" id="file_excel" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Import Sekarang</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @include('includes.footer')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>

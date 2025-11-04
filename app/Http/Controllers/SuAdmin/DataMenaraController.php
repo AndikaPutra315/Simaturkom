@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\DataMenara;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel; // DITAMBAHKAN
+use App\Imports\DataMenaraImport;      // DITAMBAHKAN
+use \Maatwebsite\Excel\Validators\ValidationException; // DITAMBAHKAN
 
 class DataMenaraController extends Controller
 {
@@ -24,7 +27,7 @@ class DataMenaraController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        // DITAMBAHKAN: Logika untuk menangani input pencarian
+        // Logika untuk menangani input pencarian
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -64,8 +67,8 @@ class DataMenaraController extends Controller
             'kelurahan' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric|between:-180,180',
+            'latitude' => 'required|numeric|between:-90,90',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
         ]);
@@ -95,8 +98,8 @@ class DataMenaraController extends Controller
             'kelurahan' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric|between:-180,180',
+            'latitude' => 'required|numeric|between:-90,90',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
         ]);
@@ -132,7 +135,7 @@ class DataMenaraController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        // DITAMBAHKAN: Logika pencarian untuk PDF
+        // Logika pencarian untuk PDF
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -150,5 +153,27 @@ class DataMenaraController extends Controller
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData', 'title'));
 
         return $pdf->stream('laporan-data-menara.pdf');
+    }
+
+    /**
+     * DITAMBAHKAN: Metode baru untuk menangani import Excel.
+     */
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls'
+        ]);
+
+        try {
+            Excel::import(new DataMenaraImport, $request->file('file_excel'));
+
+            return redirect()->route('suadmin.datamenara.index')->with('success', 'Data Excel berhasil diimpor.');
+
+        } catch (ValidationException $e) {
+             $failures = $e->failures();
+             return redirect()->route('suadmin.datamenara.index')->with('error', 'Terjadi error saat impor. Pastikan data unik dan format sudah benar.');
+        } catch (\Exception $e) {
+            return redirect()->route('suadmin.datamenara.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }
