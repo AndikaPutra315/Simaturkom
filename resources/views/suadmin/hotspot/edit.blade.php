@@ -37,7 +37,7 @@
                                 <select class="form-select" id="keterangan" name="keterangan" required>
                                     <option value="">Pilih Keterangan...</option>
                                     <option value="SKPD" @selected(old('keterangan', $hotspot->keterangan) == 'SKPD')>SKPD</option>
-                                    <option value="RTH" @selected(old('keterangan', $hotspot->keterangan) == 'RTH')>RTH</option>
+                                    <option value="Ruang Terbuka Hijau" @selected(old('keterangan', $hotspot->keterangan) == 'Ruang Terbuka Hijau')>Ruang Terbuka Hijau</option>
                                     <option value="Ruang Publik" @selected(old('keterangan', $hotspot->keterangan) == 'Ruang Publik')>Ruang Publik</option>
                                     <option value="Ruang Pendidikan" @selected(old('keterangan', $hotspot->keterangan) == 'Ruang Pendidikan')>Ruang Pendidikan</option>
                                     <option value="Fasilitas Umum" @selected(old('keterangan', $hotspot->keterangan) == 'Fasilitas Umum')>Fasilitas Umum</option>

@@ -36,7 +36,7 @@
                                 <select class="form-select" id="keterangan" name="keterangan" required>
                                     <option value="">Pilih Keterangan...</option>
                                     <option value="SKPD">SKPD</option>
-                                    <option value="RTH">RTH</option>
+                                    <option value="Ruang Terbuka Hijau">Ruang Terbuka Hijau</option>
                                     <option value="Ruang Publik">Ruang Publik</option>
                                     <option value="Ruang Pendidikan">Ruang Pendidikan</option>
                                     <option value="Fasilitas Umum">Fasilitas Umum</option>

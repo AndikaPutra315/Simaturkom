@@ -29,7 +29,7 @@
                                 <i class="fas fa-file-excel me-2"></i>Impor Excel
                             </button>
 
-                            <a href="{{ route('suadmin.hotspot.create') }}" class="btn btn-primary fw-bold">
+                            <a href="{{ route('suadmin.hotspot.create') }}" class="btn-custom btn-add fw-bold">
                                 <i class="fas fa-plus me-2"></i>Tambah Hotspot
                             </a>
                         </div>

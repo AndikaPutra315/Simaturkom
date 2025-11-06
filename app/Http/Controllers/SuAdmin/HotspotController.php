@@ -13,7 +13,7 @@ class HotspotController extends Controller
 {
     // Daftar keterangan yang masuk kategori "Layanan Gratis"
     protected $kategoriLayananGratis = [
-        'RTH',
+        'Ruang Terbuka Hijau',
         'Ruang Publik',
         'Ruang Pendidikan',
         'Fasilitas Umum',
