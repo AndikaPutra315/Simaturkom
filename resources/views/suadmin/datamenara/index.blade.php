@@ -71,9 +71,10 @@
                 </div>
             @endif
 
+            {{-- DIUBAH: Menggunakan {!! !!} agar bisa menampilkan error HTML --}}
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
+                    {!! session('error') !!}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
@@ -215,7 +216,10 @@
 
                         <div class="my-3">
                             <label for="file_excel" class="form-label fw-bold">Pilih File untuk Di-upload:</label>
-                            <input class="form-control" type="file" name="file_excel" id="file_excel" required>
+                            {{-- DITAMBAHKAN: Atribut 'accept' untuk memfilter file --}}
+                            <input class="form-control" type="file" name="file_excel" id="file_excel"
+                                   accept=".xlsx, .xls, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                   required>
                         </div>
                     </div>
                     <div class="modal-footer">

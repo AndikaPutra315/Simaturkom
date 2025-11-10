@@ -41,8 +41,8 @@ Route::get('/peta/menara-data', [PetaController::class, 'getMenaraData'])->name(
 
 
 // --- Rute Autentikasi ---
-Route::get('/wadai', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/wadai', [LoginController::class, 'login']);
+Route::get('/panel', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/panel', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
@@ -70,7 +70,7 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
     // --- Regulasi ---
     Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::resource('regulasi', RegulasiController::class);
-    
+
     // --- Hotspot (URUTAN DIPERBAIKI) ---
     // Rute spesifik harus diletakkan SEBELUM rute resource
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
