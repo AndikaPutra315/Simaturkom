@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\DataMenara;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel; // DITAMBAHKAN
-use App\Imports\DataMenaraImport;      // DITAMBAHKAN
-use \Maatwebsite\Excel\Validators\ValidationException; // DITAMBAHKAN
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\DataMenaraImport;
+use Maatwebsite\Excel\Validators\ValidationException;
+use Illuminate\Validation\Rule; // Import ini tetap diperlukan
 
 class DataMenaraController extends Controller
 {
@@ -39,9 +40,7 @@ class DataMenaraController extends Controller
             });
         }
 
-        // Paginasi diubah agar menyertakan semua parameter (filter & search)
         $menara = $query->latest()->paginate(10)->withQueryString();
-
         $providers = DataMenara::select('provider')->distinct()->orderBy('provider')->get();
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
 
@@ -61,8 +60,9 @@ class DataMenaraController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'kode' => 'required|string|max:255|unique:data_menara',
+        // --- PERBAIKAN LOGIKA VALIDASI ---
+        // 1. Definisikan aturan dasar
+        $rules = [
             'provider' => 'required|string|max:255',
             'kelurahan' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -71,7 +71,22 @@ class DataMenaraController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
-        ]);
+        ];
+
+        // 2. Definisikan aturan untuk 'kode' secara terpisah
+        $kodeRules = ['required', 'string', 'max:255'];
+
+        // 3. Tambahkan aturan 'unique' HANYA JIKA kodenya BUKAN "-"
+        if ($request->input('kode') !== '-') {
+            $kodeRules[] = Rule::unique('data_menara');
+        }
+
+        // 4. Gabungkan aturan 'kode' ke dalam aturan utama
+        $rules['kode'] = $kodeRules;
+
+        // 5. Jalankan validasi
+        $request->validate($rules);
+        // --- AKHIR PERBAIKAN ---
 
         DataMenara::create($request->all());
 
@@ -92,8 +107,8 @@ class DataMenaraController extends Controller
      */
     public function update(Request $request, DataMenara $datamenara)
     {
-        $request->validate([
-            'kode' => 'required|string|max:255|unique:data_menara,kode,' . $datamenara->id,
+        // --- PERBAIKAN LOGIKA VALIDASI ---
+        $rules = [
             'provider' => 'required|string|max:255',
             'kelurahan' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -102,7 +117,18 @@ class DataMenaraController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'status' => 'required|string|max:255',
             'tinggi_tower' => 'required|integer',
-        ]);
+        ];
+
+        $kodeRules = ['required', 'string', 'max:255'];
+
+        // Tambahkan aturan 'unique' HANYA JIKA kodenya BUKAN "-"
+        if ($request->input('kode') !== '-') {
+            $kodeRules[] = Rule::unique('data_menara')->ignore($datamenara->id);
+        }
+
+        $rules['kode'] = $kodeRules;
+        $request->validate($rules);
+        // --- AKHIR PERBAIKAN ---
 
         $datamenara->update($request->all());
 
@@ -116,7 +142,6 @@ class DataMenaraController extends Controller
     public function destroy(DataMenara $datamenara)
     {
         $datamenara->delete();
-
         return redirect()->route('suadmin.datamenara.index')
                          ->with('success', 'Data menara berhasil dihapus.');
     }
@@ -134,8 +159,6 @@ class DataMenaraController extends Controller
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
         }
-
-        // Logika pencarian untuk PDF
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -146,12 +169,9 @@ class DataMenaraController extends Controller
                   ->orWhere('alamat', 'like', "%{$search}%");
             });
         }
-
         $menaraData = $query->get();
         $title = 'Laporan Data Menara Telekomunikasi';
-
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData', 'title'));
-
         return $pdf->stream('laporan-data-menara.pdf');
     }
 
@@ -166,9 +186,7 @@ class DataMenaraController extends Controller
 
         try {
             Excel::import(new DataMenaraImport, $request->file('file_excel'));
-
             return redirect()->route('suadmin.datamenara.index')->with('success', 'Data Excel berhasil diimpor.');
-
         } catch (ValidationException $e) {
              $failures = $e->failures();
              return redirect()->route('suadmin.datamenara.index')->with('error', 'Terjadi error saat impor. Pastikan data unik dan format sudah benar.');
