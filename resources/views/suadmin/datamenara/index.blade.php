@@ -204,7 +204,7 @@
 
                         {{-- DITAMBAHKAN: Link untuk download template --}}
                         <div class="mb-3">
-                            <a href="{{ asset('files/excelcontoh.xlsx') }}" class="btn btn-outline-success btn-sm" download>
+                            <a href="{{ asset('files/contoh template data menara.xlsx') }}" class="btn btn-outline-success btn-sm" download>
                                 <i class="fas fa-file-excel me-2"></i> Download Contoh Template
                             </a>
                         </div>

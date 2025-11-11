@@ -113,15 +113,11 @@
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-phone"></i>
-                    <span>(0526) 2021035 - (0626) 2023169</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-fax"></i>
-                    <span>(0526) 2021510</span>
+                    <span>(0526) 2023169</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-envelope"></i>
-                    <span>info@tabalongkab.go.id - diskominfo@tabalongkab.go.id</span>
+                    <span>diskominfo@tabalongkab.go.id</span>
                 </div>
             </div>
 
