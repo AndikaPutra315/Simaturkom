@@ -13,19 +13,16 @@ use App\Http\Controllers\SuAdmin\DataMenaraController;
 use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
 use App\Http\Controllers\SuAdmin\UserManagementController;
+use App\Http\Controllers\SuAdmin\DataBaktiController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
 
-// --- Rute Halaman Publik ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/chart-data', [HomeController::class, 'getChartData'])->name('chart.data');
 
 Route::get('/datamenara', [HomeController::class, 'dataMenara'])->name('datamenara');
 Route::get('/datamenara/pdf', [HomeController::class, 'generateMenaraPDF'])->name('datamenara.pdf');
+
+Route::get('/databakti', [HomeController::class, 'dataBakti'])->name('databakti');
 
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/regulasi/{regulasi}/view', [HomeController::class, 'trackRegulasiView'])->name('regulasi.view.public');
@@ -40,7 +37,6 @@ Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 Route::get('/peta/menara-data', [PetaController::class, 'getMenaraData'])->name('peta.menara_data');
 
 
-// --- Rute Autentikasi ---
 Route::get('/panel', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/panel', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -52,33 +48,29 @@ Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showRese
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
-// --- Rute Admin ---
 Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // --- Data Menara ---
+
     Route::get('/datamenara/pdf', [DataMenaraController::class, 'generatePDF'])->name('datamenara.pdf');
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
-    // RUTE BARU: Untuk melacak unduhan regulasi oleh admin
+
     Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::post('/datamenara/import', [DataMenaraController::class, 'importExcel'])->name('datamenara.import');
 
-    // Rute Resource untuk Admin
     Route::resource('datamenara', DataMenaraController::class);
 
-    // --- Regulasi ---
+    Route::resource('databakti', DataBaktiController::class);
+
     Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::resource('regulasi', RegulasiController::class);
 
-    // --- Hotspot (URUTAN DIPERBAIKI) ---
-    // Rute spesifik harus diletakkan SEBELUM rute resource
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
     Route::get('/hotspot/import', [AdminHotspotController::class, 'showImportForm'])->name('hotspot.import.form');
     Route::post('/hotspot/import', [AdminHotspotController::class, 'handleImport'])->name('hotspot.import.handle');
-    Route::resource('hotspot', AdminHotspotController::class); // Rute resource selalu di bagian akhir
+    Route::resource('hotspot', AdminHotspotController::class);
 
-    // --- Users ---
     Route::resource('users', UserManagementController::class);
 
 });
