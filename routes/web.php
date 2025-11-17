@@ -14,7 +14,7 @@ use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
 use App\Http\Controllers\SuAdmin\UserManagementController;
 use App\Http\Controllers\SuAdmin\DataBaktiController;
-use App\Http\Controllers\SuAdmin\BlankspotController as AdminBlankspotController; // <-- DITAMBAHKAN DARI TEMAN ANDA
+use App\Http\Controllers\SuAdmin\BlankspotController as AdminBlankspotController;
 
 
 // --- Rute Halaman Publik ---

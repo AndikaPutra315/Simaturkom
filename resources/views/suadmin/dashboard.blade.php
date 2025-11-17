@@ -89,6 +89,7 @@
                     <div class="card-body">
                         <div class="d-grid gap-3">
                             <a href="{{ route('suadmin.datamenara.create') }}" class="btn btn-primary btn-lg"><i class="fas fa-plus me-2"></i> Tambah Data Menara</a>
+                            <a href="{{ route('suadmin.blankspot.create') }}" class="btn btn-primary btn-lg"><i class="fas fa-plus me-2"></i> Tambah Data Blankspot</a>
                             <a href="{{ route('suadmin.hotspot.create') }}" class="btn btn-success btn-lg"><i class="fas fa-plus me-2"></i> Tambah Data Hotspot</a>
                             <a href="{{ route('suadmin.regulasi.create') }}" class="btn btn-warning btn-lg text-white"><i class="fas fa-plus me-2"></i> Tambah Regulasi</a>
                         </div>
