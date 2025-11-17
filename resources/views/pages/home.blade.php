@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400;500&family=Poppins:wght@300;400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
 </head>
@@ -84,6 +85,7 @@
             <div class="container">
                 <h2 class="section-title">Data Infrastruktur</h2>
                 <hr class="section-divider">
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="icon"><i class="fas fa-satellite-dish"></i></div>
@@ -99,7 +101,18 @@
                             <p class="label">Rencana Pembangunan</p>
                         </div>
                     </div>
+                    
+                    <a href="{{ route('blankspot.index') }}" class="stat-card-link">
+                        <div class="stat-card"> 
+                            <div class="icon"><i class="fas fa-map-pin"></i></div>
+                            <div class="info">
+                                <p class="number">{{ $totalBlankspot }}</p>
+                                <p class="label">Total Titik Blankspot</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
+
                 <div class="chart-container">
                     <div class="chart-tabs">
                         <div>
@@ -136,11 +149,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            /**
-             * DITAMBAHKAN: Fungsi untuk menghasilkan daftar warna
-             * Ini akan membuat warna yang konsisten dan profesional
-             */
+            
             function generateBarColors(numColors) {
                 const colors = [];
                 const baseColors = [
@@ -155,7 +164,7 @@
                     'rgba(52, 172, 224, 0.8)',  // Biru Langit
                 ];
                 for (let i = 0; i < numColors; i++) {
-                    colors.push(baseColors[i % baseColors.length]); // Mengulang palet warna jika data lebih banyak
+                    colors.push(baseColors[i % baseColors.length]);
                 }
                 return colors;
             }
@@ -218,12 +227,9 @@
                 fetch(`{{ route('chart.data') }}?kecamatan=${selectedKecamatan}`)
                     .then(response => response.json())
                     .then(newData => {
-                        // DITAMBAHKAN: Hasilkan warna baru untuk data yang di-filter
                         const newColors = generateBarColors(newData.data.length);
-
                         towerChart.data.labels = newData.labels;
                         towerChart.data.datasets[0].data = newData.data;
-                        // DITAMBAHKAN: Terapkan warna baru
                         towerChart.data.datasets[0].backgroundColor = newColors;
                         towerChart.update();
                     });

@@ -12,7 +12,8 @@ use App\Http\Controllers\SuAdmin\DashboardController;
 use App\Http\Controllers\SuAdmin\DataMenaraController;
 use App\Http\Controllers\SuAdmin\RegulasiController;
 use App\Http\Controllers\SuAdmin\HotspotController as AdminHotspotController;
-use App\Http\Controllers\SuAdmin\UserManagementController;
+use App\Http\Controllers\SuAdmin\UserManagementController; 
+use App\Http\Controllers\SuAdmin\BlankspotController as AdminBlankspotController; // Pastikan ini ada
 
 /*
 |--------------------------------------------------------------------------
@@ -23,21 +24,18 @@ use App\Http\Controllers\SuAdmin\UserManagementController;
 // --- Rute Halaman Publik ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/chart-data', [HomeController::class, 'getChartData'])->name('chart.data');
-
 Route::get('/datamenara', [HomeController::class, 'dataMenara'])->name('datamenara');
 Route::get('/datamenara/pdf', [HomeController::class, 'generateMenaraPDF'])->name('datamenara.pdf');
-
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/regulasi/{regulasi}/view', [HomeController::class, 'trackRegulasiView'])->name('regulasi.view.public');
 Route::get('/regulasi/{regulasi}/download', [HomeController::class, 'trackRegulasiDownload'])->name('regulasi.download.public');
-
-
 Route::get('/hotspot', [HotspotController::class, 'index'])->name('hotspot.index');
 Route::get('/hotspot/autocomplete', [HotspotController::class, 'autocomplete'])->name('hotspot.autocomplete');
 Route::get('/hotspot/pdf', [HotspotController::class, 'generatePDF'])->name('hotspot.pdf');
-
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 Route::get('/peta/menara-data', [PetaController::class, 'getMenaraData'])->name('peta.menara_data');
+Route::get('/blankspot', [HomeController::class, 'blankspot'])->name('blankspot.index');
+Route::get('/blankspot/pdf', [HomeController::class, 'generateBlankspotPDF'])->name('blankspot.pdf');
 
 
 // --- Rute Autentikasi ---
@@ -56,29 +54,30 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name(
 Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/update-rencana', [DashboardController::class, 'updateRencana'])->name('dashboard.update_rencana'); 
 
     // --- Data Menara ---
     Route::get('/datamenara/pdf', [DataMenaraController::class, 'generatePDF'])->name('datamenara.pdf');
-    Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
-    // RUTE BARU: Untuk melacak unduhan regulasi oleh admin
-    Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::post('/datamenara/import', [DataMenaraController::class, 'importExcel'])->name('datamenara.import');
-
-    // Rute Resource untuk Admin
     Route::resource('datamenara', DataMenaraController::class);
 
     // --- Regulasi ---
     Route::get('/regulasi/{regulasi}/download', [RegulasiController::class, 'trackDownload'])->name('regulasi.download');
     Route::resource('regulasi', RegulasiController::class);
-
-    // --- Hotspot (URUTAN DIPERBAIKI) ---
-    // Rute spesifik harus diletakkan SEBELUM rute resource
+    
+    // --- Hotspot ---
     Route::get('/hotspot/pdf', [AdminHotspotController::class, 'generatePDF'])->name('hotspot.pdf');
     Route::get('/hotspot/import', [AdminHotspotController::class, 'showImportForm'])->name('hotspot.import.form');
     Route::post('/hotspot/import', [AdminHotspotController::class, 'handleImport'])->name('hotspot.import.handle');
-    Route::resource('hotspot', AdminHotspotController::class); // Rute resource selalu di bagian akhir
+    Route::resource('hotspot', AdminHotspotController::class);
 
     // --- Users ---
     Route::resource('users', UserManagementController::class);
+    
+   
+    // --- Blankspot ---
+    Route::get('/blankspot/pdf', [AdminBlankspotController::class, 'generatePDF'])->name('blankspot.pdf'); // <-- TAMBAHKAN INI
+    Route::post('/blankspot/import', [AdminBlankspotController::class, 'handleImport'])->name('blankspot.import.handle');
+    Route::resource('blankspot', AdminBlankspotController::class);
 
 });

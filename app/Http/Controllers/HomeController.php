@@ -8,7 +8,8 @@ use App\Models\Regulasi;
 use App\Models\HotspotData;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage; // Pastikan ini ada
+use Illuminate\Support\Facades\Storage; 
+use App\Models\Blankspot;
 
 class HomeController extends Controller
 {
@@ -28,9 +29,13 @@ class HomeController extends Controller
         $totalMenara = DataMenara::count();
         $rencanaPembangunan = 12; // Data statis
 
+        // --- 1. TAMBAHKAN BARIS INI ---
+        $totalBlankspot = Blankspot::count(); 
+
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
 
-        return view('pages.home', compact('initialChartData', 'totalMenara', 'rencanaPembangunan', 'kecamatans'));
+        // --- 2. TAMBAHKAN '$totalBlankspot' KE DALAM COMPACT ---
+        return view('pages.home', compact('initialChartData', 'totalMenara', 'rencanaPembangunan', 'kecamatans', 'totalBlankspot'));
     }
 
     public function getChartData(Request $request)
@@ -141,4 +146,56 @@ class HomeController extends Controller
         $regulasi->increment('download_count');
         return Storage::disk('public')->download($regulasi->file_path, $regulasi->nama_file_asli);
     }
+
+    public function blankspot(Request $request) // Tambahkan Request $request
+    {
+        $search = $request->query('search'); // Ambil kata kunci pencarian
+        $query = Blankspot::query();
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('desa', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('site', 'like', "%{$search}%")
+                  ->orWhere('lokasi_blankspot', 'like', "%{$search}%");
+            });
+        }
+        
+        $blankspots = $query->orderBy('kecamatan')->orderBy('desa')->paginate(20);
+        $blankspots->appends($request->only('search')); // Jaga pencarian saat paginasi
+        
+        // Kirim $search ke view
+        return view('pages.blankspot', compact('blankspots', 'search'));
+    }
+
+    /**
+     * BARU: Method untuk membuat PDF data blankspot
+     */
+    public function generateBlankspotPDF(Request $request)
+    {
+        $search = $request->query('search');
+        $query = Blankspot::query();
+
+        // Terapkan logika pencarian yang sama
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('desa', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('site', 'like', "%{$search}%")
+                  ->orWhere('lokasi_blankspot', 'like', "%{$search}%");
+            });
+        }
+        
+        // Ambil SEMUA data yang cocok (tanpa paginasi)
+        $blankspots = $query->orderBy('kecamatan')->orderBy('desa')->get();
+
+        $pdf = Pdf::loadView('pages.blankspot_pdf', compact('blankspots'));
+        
+        // Atur ke landscape karena tabelnya lebar
+        $pdf->setPaper('a4', 'landscape'); 
+        
+        $fileName = 'data-blankspot-' . date('Y-m-d') . '.pdf';
+        return $pdf->download($fileName);
+    }
+
 }

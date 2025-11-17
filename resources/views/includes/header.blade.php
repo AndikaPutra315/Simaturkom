@@ -29,23 +29,19 @@
     .admin-bar .btn-logout { background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
     .admin-bar .btn-logout:hover { background-color: white; color: #1a237e; }
 
-    /* -- CSS BARU UNTUK RESPONSIVITAS -- */
+    /* -- CSS UNTUK RESPONSIVITAS -- */
     .mobile-menu-toggle {
-        display: none; /* Sembunyikan di desktop */
+        display: none;
         font-size: 1.5rem;
         color: #333;
         background: none;
         border: none;
         cursor: pointer;
     }
-
-    /* Tampilan Tablet & Mobile */
     @media (max-width: 992px) {
-        .header-nav {
-            padding: 0.75rem 1rem;
-        }
+        .header-nav { padding: 0.75rem 1rem; }
         .header-menu {
-            display: none; /* Sembunyikan menu desktop */
+            display: none;
             flex-direction: column;
             position: absolute;
             top: 100%;
@@ -56,45 +52,17 @@
             padding: 10px 0;
             z-index: 1000;
         }
-        .header-menu.active {
-            display: flex; /* Tampilkan menu saat kelas 'active' ditambahkan */
-        }
-        .header-menu li {
-            margin: 0;
-            width: 100%;
-        }
-        .header-menu a {
-            padding: 15px 20px;
-            border-radius: 0;
-            border-bottom: 1px solid #f0f0f0;
-            display: block;
-        }
-        .mobile-menu-toggle {
-            display: block; /* Tampilkan tombol hamburger */
-        }
-        .admin-bar {
-            flex-direction: column;
-            gap: 10px;
-            padding: 0.75rem 1rem;
-        }
-        .admin-menu {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        .header-menu.active { display: flex; }
+        .header-menu li { margin: 0; width: 100%; }
+        .header-menu a { padding: 15px 20px; border-radius: 0; border-bottom: 1px solid #f0f0f0; display: block; }
+        .mobile-menu-toggle { display: block; }
+        .admin-bar { flex-direction: column; gap: 10px; padding: 0.75rem 1rem; }
+        .admin-menu { flex-wrap: wrap; justify-content: center; }
     }
-
-    /* Tampilan Mobile Kecil */
     @media (max-width: 576px) {
-        .logo-group {
-            padding-right: 10px;
-            margin-right: 10px;
-        }
-        .logo-group img {
-            height: 35px;
-        }
-        .site-name {
-            font-size: 1.2rem;
-        }
+        .logo-group { padding-right: 10px; margin-right: 10px; }
+        .logo-group img { height: 35px; }
+        .site-name { font-size: 1.2rem; }
     }
 </style>
 
@@ -117,7 +85,15 @@
 
         <ul class="header-menu" id="headerMenu">
             <li><a href="{{ Auth::check() ? route('suadmin.dashboard') : route('home') }}" class="{{ Request::routeIs('home', 'suadmin.dashboard') ? 'active' : '' }}">Home</a></li>
-            <li><a href="{{ Auth::check() ? route('suadmin.hotspot.index') : route('hotspot.index') }}" class="{{ Request::routeIs('hotspot.index', 'suadmin.hotspot.*') ? 'active' : '' }}">Hotspot</a></li>
+            
+            <li><a href="{{ Auth::check() ? route('suadmin.hotspot.index') : route('hotspot.index') }}" 
+                   class="{{ (Request::routeIs('hotspot.index') || Request::routeIs('suadmin.hotspot.*')) ? 'active' : '' }}">Hotspot</a>
+            </li>
+            
+            <li><a href="{{ Auth::check() ? route('suadmin.blankspot.index') : route('blankspot.index') }}" 
+                   class="{{ (Request::routeIs('blankspot.index') || Request::routeIs('suadmin.blankspot.*')) ? 'active' : '' }}">Blankspot</a>
+            </li>
+
             <li><a href="{{ Auth::check() ? route('suadmin.regulasi.index') : route('regulasi') }}" class="{{ Request::routeIs('regulasi', 'suadmin.regulasi.*') ? 'active' : '' }}">Regulasi</a></li>
             <li><a href="{{ Auth::check() ? route('suadmin.datamenara.index') : route('datamenara') }}" class="{{ Request::routeIs('datamenara', 'suadmin.datamenara.*') ? 'active' : '' }}">Data Menara</a></li>
             <li><a href="{{ route('peta.index') }}" class="{{ Request::routeIs('peta.index') ? 'active' : '' }}">Peta Sebaran</a></li>
@@ -135,6 +111,7 @@
                 @if (Auth::user()->role == 'suadmin')
                     <a href="{{ route('suadmin.users.index') }}" class="{{ Request::routeIs('suadmin.users.*') ? 'active' : '' }}"><i class="fas fa-users-cog me-2"></i>Manajemen Admin</a>
                 @endif
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-logout ms-3"><i class="fas fa-sign-out-alt me-2"></i> Log Out</button>
