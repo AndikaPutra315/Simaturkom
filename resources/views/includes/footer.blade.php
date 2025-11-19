@@ -74,7 +74,6 @@
     .fa-instagram-square { color: #E4405F; }
     .fa-youtube { color: #FF0000; }
 
-    /* CSS BARU UNTUK COPYRIGHT CONTAINER */
     .copyright-container {
         background-color: #343a40;
         padding: 15px 20px;

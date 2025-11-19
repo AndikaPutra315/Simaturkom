@@ -27,7 +27,7 @@ Route::get('/datamenara/pdf', [HomeController::class, 'generateMenaraPDF'])->nam
 
 // Rute Data Bakti (Dari Kode Anda)
 Route::get('/databakti', [HomeController::class, 'dataBakti'])->name('databakti');
-
+Route::get('/databakti/pdf', [HomeController::class, 'generateBaktiPDF'])->name('databakti.pdf');
 // Rute Regulasi
 Route::get('/regulasi', [HomeController::class, 'regulasi'])->name('regulasi');
 Route::get('/regulasi/{regulasi}/view', [HomeController::class, 'trackRegulasiView'])->name('regulasi.view.public');
@@ -73,6 +73,8 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
 
 
     // --- Data Bakti (Dari Kode Anda) ---
+    Route::get('/databakti/pdf', [DataBaktiController::class, 'generatePDF'])->name('databakti.pdf');
+    Route::post('/databakti/import', [DataBaktiController::class, 'import'])->name('databakti.import'); // <-- TAMBAHKAN INI
     Route::resource('databakti', DataBaktiController::class);
 
 

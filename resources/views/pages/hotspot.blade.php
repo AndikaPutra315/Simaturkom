@@ -9,9 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    {{-- Memanggil file CSS eksternal --}}
     <link rel="stylesheet" href="{{ asset('css/hotspot.css') }}">
-    
+
 </head>
 
 <body>
@@ -44,15 +43,12 @@
                 </div>
 
                 <div class="tabs-container">
-                    {{-- Tab SKPD --}}
-                    <a href="{{ route('hotspot.index', ['kategori' => 'skpd', 'search' => $searchTerm ?? '']) }}"
+                                        <a href="{{ route('hotspot.index', ['kategori' => 'skpd', 'search' => $searchTerm ?? '']) }}"
                         class="tab-link {{ $kategoriAktif == 'skpd' ? 'active' : '' }}">Hotspot SKPD</a>
 
-                    {{-- Tab Layanan Gratis --}}
                     <a href="{{ route('hotspot.index', ['kategori' => 'free', 'search' => $searchTerm ?? '']) }}"
                         class="tab-link {{ $kategoriAktif == 'free' ? 'active' : '' }}">Layanan Internet Gratis</a>
 
-                    {{-- Tab Starlink Akses --}}
                     <a href="{{ route('hotspot.index', ['kategori' => 'starlink', 'search' => $searchTerm ?? '']) }}"
                         class="tab-link {{ $kategoriAktif == 'starlink' ? 'active' : '' }}">Starlink Akses</a>
                 </div>
@@ -115,7 +111,7 @@
                 clearTimeout(debounceTimer);
                 if (term.length < 2) {
                     suggestionsContainer.innerHTML = '';
-                    suggestionsContainer.style.display = 'none'; // Sembunyikan
+                    suggestionsContainer.style.display = 'none';
                     return;
                 }
                 debounceTimer = setTimeout(() => {
@@ -124,20 +120,20 @@
                         .then(data => {
                             suggestionsContainer.innerHTML = '';
                             if (data.length > 0) {
-                                suggestionsContainer.style.display = 'block'; // Tampilkan
+                                suggestionsContainer.style.display = 'block';
                                 data.forEach(suggestion => {
                                     const item = document.createElement('div');
                                     item.classList.add('suggestion-item');
                                     item.textContent = suggestion;
                                     item.addEventListener('click', function() {
                                         searchInput.value = this.textContent;
-                                        suggestionsContainer.style.display = 'none'; // Sembunyikan
+                                        suggestionsContainer.style.display = 'none';
                                         searchForm.submit();
                                     });
                                     suggestionsContainer.appendChild(item);
                                 });
                             } else {
-                                suggestionsContainer.style.display = 'none'; // Sembunyikan
+                                suggestionsContainer.style.display = 'none';
                             }
                         });
                 }, 300);
@@ -145,7 +141,7 @@
 
             document.addEventListener('click', function(e) {
                 if (!searchForm.contains(e.target)) {
-                    suggestionsContainer.style.display = 'none'; // Sembunyikan
+                    suggestionsContainer.style.display = 'none';
                 }
             });
         });

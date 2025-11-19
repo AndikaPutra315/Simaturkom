@@ -8,8 +8,9 @@ use App\Models\Regulasi;
 use App\Models\HotspotData;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Storage;
 use App\Models\Blankspot;
+use App\Models\DataBakti; // <-- Ini sudah benar
 
 class HomeController extends Controller
 {
@@ -30,7 +31,7 @@ class HomeController extends Controller
         $rencanaPembangunan = 12; // Data statis
 
         // --- 1. TAMBAHKAN BARIS INI ---
-        $totalBlankspot = Blankspot::count(); 
+        $totalBlankspot = Blankspot::count();
 
         $kecamatans = DataMenara::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
 
@@ -97,6 +98,47 @@ class HomeController extends Controller
         return view('pages.datamenara', compact('menaraData', 'providers', 'kecamatans'));
     }
 
+    // --- (INI BAGIAN YANG SAYA PERBAIKI) ---
+    /**
+     * Menampilkan halaman publik untuk Data Bakti.
+     * (VERSI FINAL - Sesuai dengan database baru 'provider')
+     */
+    public function dataBakti(Request $request)
+    {
+        $query = DataBakti::query(); // Menggunakan Model DataBakti
+
+        // Logika Pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%") // <-- KEMBALI MENGGUNAKAN 'provider'
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
+
+        // Logika filter
+        if ($request->filled('provider')) { // <-- KEMBALI MENGGUNAKAN 'provider'
+            $query->where('provider', $request->provider); // <-- KEMBALI MENGGUNAKAN 'provider'
+        }
+        if ($request->filled('kecamatan')) {
+            $query->where('kecamatan', $request->kecamatan);
+        }
+
+        // Paginasi
+        $dataBakti = $query->latest()->paginate(10)->withQueryString();
+
+        // Ambil data filter dari kolom 'provider'
+        $providers = DataBakti::select('provider')->distinct()->orderBy('provider')->get(); // <-- KEMBALI MENGGUNAKAN 'provider'
+        $kecamatans = DataBakti::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
+
+        // Mengarahkan ke view publik 'pages.databakti'
+        return view('pages.databakti', compact('dataBakti', 'providers', 'kecamatans'));
+    }
+    // --- AKHIR FUNGSI BARU ---
+
     public function regulasi()
     {
         $regulasiData = Regulasi::latest()->get();
@@ -130,7 +172,7 @@ class HomeController extends Controller
         $pdf = Pdf::loadView('pages.datamenara_pdf', compact('menaraData'));
         $pdf->setPaper('a4', 'landscape');
 
-        $fileName = 'data-menara-telekomunikasi-' . date('Y-m-d') . '.pdf';
+        $fileName = 'data-menara-telekomunikasi-' . date('Y-md') . '.pdf';
 
         return $pdf->download($fileName);
     }
@@ -160,10 +202,10 @@ class HomeController extends Controller
                   ->orWhere('lokasi_blankspot', 'like', "%{$search}%");
             });
         }
-        
+
         $blankspots = $query->orderBy('kecamatan')->orderBy('desa')->paginate(20);
         $blankspots->appends($request->only('search')); // Jaga pencarian saat paginasi
-        
+
         // Kirim $search ke view
         return view('pages.blankspot', compact('blankspots', 'search'));
     }
@@ -185,17 +227,51 @@ class HomeController extends Controller
                   ->orWhere('lokasi_blankspot', 'like', "%{$search}%");
             });
         }
-        
+
         // Ambil SEMUA data yang cocok (tanpa paginasi)
         $blankspots = $query->orderBy('kecamatan')->orderBy('desa')->get();
 
         $pdf = Pdf::loadView('pages.blankspot_pdf', compact('blankspots'));
-        
+
         // Atur ke landscape karena tabelnya lebar
-        $pdf->setPaper('a4', 'landscape'); 
-        
-        $fileName = 'data-blankspot-' . date('Y-m-d') . '.pdf';
+        $pdf->setPaper('a4', 'landscape');
+
+        $fileName = 'data-blankspot-' . date('Y-md') . '.pdf';
         return $pdf->download($fileName);
     }
 
+    // --- (FUNGSI BARU SAYA TAMBAHKAN DI SINI) ---
+    /**
+     * BARU: Method untuk membuat PDF data bakti (Publik).
+     */
+    public function generateBaktiPDF(Request $request)
+    {
+        $query = DataBakti::query(); // Gunakan model DataBakti
+
+        // Salin logika filter dari method dataBakti()
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                // Jangan cari 'kode' karena itu rahasia
+                $q->where('provider', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%");
+            });
+        }
+        if ($request->filled('provider')) {
+            $query->where('provider', $request->provider);
+        }
+        if ($request->filled('kecamatan')) {
+            $query->where('kecamatan', $request->kecamatan);
+        }
+
+        // Ambil SEMUA data yang cocok (tanpa paginasi)
+        $dataBakti = $query->latest()->get();
+
+        // PENTING: Muat view PDF terpisah untuk tamu
+        $pdf = Pdf::loadView('pages.databakti_pdf', compact('dataBakti'));
+        $pdf->setPaper('a4', 'landscape');
+
+        $fileName = 'data-bakti-' . date('Y-m-d') . '.pdf';
+        return $pdf->download($fileName);
+    }
 }

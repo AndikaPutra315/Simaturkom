@@ -29,11 +29,9 @@
                                 <h5 class="card-title">{{ $dokumen->nama_dokumen }}</h5>
                             </div>
                             <div class="card-footer d-flex gap-2">
-                                {{-- DIUBAH: Link sekarang mengarah ke rute pelacakan --}}
                                 <a href="{{ route('regulasi.view.public', $dokumen->id) }}" class="btn btn-outline-primary w-100" target="_blank">
                                     <i class="fas fa-eye me-2"></i> Lihat
                                 </a>
-                                {{-- DIUBAH: Link sekarang mengarah ke rute pelacakan --}}
                                 <a href="{{ route('regulasi.download.public', $dokumen->id) }}" class="btn btn-primary w-100">
                                     <i class="fas fa-download me-2"></i> Download
                                 </a>

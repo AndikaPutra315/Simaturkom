@@ -11,7 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400;500&family=Poppins:wght@300;400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
+
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
 </head>
@@ -101,9 +101,9 @@
                             <p class="label">Rencana Pembangunan</p>
                         </div>
                     </div>
-                    
+
                     <a href="{{ route('blankspot.index') }}" class="stat-card-link">
-                        <div class="stat-card"> 
+                        <div class="stat-card">
                             <div class="icon"><i class="fas fa-map-pin"></i></div>
                             <div class="info">
                                 <p class="number">{{ $totalBlankspot }}</p>
@@ -149,7 +149,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
+
             function generateBarColors(numColors) {
                 const colors = [];
                 const baseColors = [

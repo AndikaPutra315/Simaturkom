@@ -101,9 +101,6 @@ class RegulasiController extends Controller
                          ->with('success', 'Dokumen regulasi berhasil dihapus.');
     }
 
-    /**
-     * DITAMBAHKAN: Melacak jumlah unduh dan memulai download file.
-     */
     public function trackDownload(Regulasi $regulasi)
     {
         $regulasi->increment('download_count');

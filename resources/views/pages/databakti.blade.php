@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Menara - SIMATURKOM</title>
+    <title>Data Bakti - SIMATURKOM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        /* SEMUA CSS KUSTOM DARI datamenara.blade.php DISALIN KE SINI */
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -188,12 +189,12 @@
         <div class="container">
             <div class="content-card">
                 <div class="card-header">
-                    <h1>Data Menara Telekomunikasi</h1>
-                    <p>Jelajahi data menara telekomunikasi yang terdaftar di Kabupaten Tabalong.</p>
+                    <h1>Data Bakti</h1>
+                    <p>Jelajahi data infrastruktur Bakti yang terdaftar di Kabupaten Tabalong.</p>
                 </div>
 
                 <div class="toolbar">
-                    <form action="{{ route('datamenara') }}" method="GET" class="filter-search-form">
+                    <form action="{{ route('databakti') }}" method="GET" class="filter-search-form">
                         <div class="filter-group">
                             <select name="provider" class="form-select" onchange="this.form.submit()">
                                 <option value="">Semua Provider</option>
@@ -216,8 +217,8 @@
                     </form>
 
                     <div class="action-buttons">
-                        <a href="{{ route('datamenara') }}" class="btn-action btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</a>
-                        <a href="{{ route('datamenara.pdf', request()->query()) }}" class="btn-action btn-pdf" target="_blank"><i class="fas fa-file-pdf"></i> Generate PDF</a>
+                        <a href="{{ route('databakti') }}" class="btn-action btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</a>
+                        <a href="{{ route('databakti.pdf', request()->query()) }}" class="btn-action btn-pdf" target="_blank"><i class="fas fa-file-pdf"></i> Generate PDF</a>
                     </div>
                 </div>
 
@@ -225,7 +226,7 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Provider</th>
+                                <th>Provider (Nama)</th>
                                 <th>DESA/Kelurahan</th>
                                 <th>Kecamatan</th>
                                 <th>Alamat</th>
@@ -236,26 +237,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($menaraData as $menara)
+                            @forelse ($dataBakti as $item)
                                 <tr>
-                                    <td>{{ $menara->provider }}</td>
-                                    <td>{{ $menara->kelurahan }}</td>
-                                    <td>{{ $menara->kecamatan }}</td>g5
-                                    <td>{{ $menara->alamat }}</td>
-                                    <td>{{ $menara->longitude }}</td>
-                                    <td>{{ $menara->latitude }}</td>
+                                    <td>{{ $item->provider }}</td>
+                                    <td>{{ $item->kelurahan }}</td>
+                                    <td>{{ $item->kecamatan }}</td>
+                                    <td>{{ $item->alamat }}</td>
+                                    <td>{{ $item->longitude }}</td>
+                                    <td>{{ $item->latitude }}</td>
                                     <td>
-                                        @if (strtolower($menara->status) == 'aktif')
+                                        @if (strtolower($item->status) == 'aktif')
                                             <span class="status-badge status-aktif">Aktif</span>
                                         @else
                                             <span class="status-badge status-nonaktif">Nonaktif</span>
                                         @endif
                                     </td>
-                                    <td>{{ $menara->tinggi_tower }} m</td>
+                                    <td>{{ $item->tinggi_tower }} m</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" style="text-align: center; padding: 20px;">
+                                    <td colspan="8" style="text-align: center; padding: 20px;">
                                         <h5>Data Tidak Ditemukan</h5>
                                         <p>Tidak ada data yang cocok dengan kriteria filter atau pencarian Anda.</p>
                                     </td>
@@ -267,10 +268,10 @@
 
                 <div class="table-footer">
                     <div class="entries-info">
-                        Menampilkan {{ $menaraData->firstItem() }} sampai {{ $menaraData->lastItem() }} dari {{ $menaraData->total() }} entri
+                        Menampilkan {{ $dataBakti->firstItem() }} sampai {{ $dataBakti->lastItem() }} dari {{ $dataBakti->total() }} entri
                     </div>
                     <nav class="pagination-nav">
-                        {{ $menaraData->links('pagination::bootstrap-5') }}
+                        {{ $dataBakti->links('pagination::bootstrap-5') }}
                     </nav>
                 </div>
             </div>

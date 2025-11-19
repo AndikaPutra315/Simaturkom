@@ -10,10 +10,9 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f4f7fc; }
 
-        /* Mengubah tinggi map agar tidak memenuhi layar */
         #map {
             width: 100%;
-            height: 650px; /* Atur tinggi peta di sini */
+            height: 650px;
             border-radius: 8px;
         }
 
@@ -29,7 +28,6 @@
             color: #33425e;
         }
 
-        /* Styling untuk area filter */
         .filter-area {
             background-color: #f8f9fa;
             border-radius: 8px;
@@ -62,7 +60,6 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
                     <div class="row g-4">
-                        {{-- KOLOM FILTER KIRI --}}
                         <div class="col-lg-3">
                             <div class="filter-area">
                                 <h3 class="fw-bold mb-4" style="color: #1a237e;">Filter Peta</h3>
@@ -107,7 +104,6 @@
                             </div>
                         </div>
 
-                        {{-- KOLOM PETA KANAN --}}
                         <div class="col-lg-9">
                             <div class="map-wrapper">
                                 <div id="map"></div>
@@ -125,7 +121,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Script JavaScript Anda tidak perlu diubah dan akan tetap berfungsi
         document.addEventListener('DOMContentLoaded', function() {
             const map = L.map('map').setView([-2.16, 115.38], 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);

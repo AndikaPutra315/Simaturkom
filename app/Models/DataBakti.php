@@ -9,6 +9,7 @@ class DataBakti extends Model
 {
     use HasFactory;
 
-    // Tambahkan ini
+
+    protected $table = 'data_bakti';
     protected $guarded = [];
 }
