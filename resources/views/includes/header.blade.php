@@ -1,5 +1,5 @@
 <style>
-    /* -- CSS ASLI ANDA -- */
+    /* -- CSS HEADER UTAMA -- */
     .header-nav {
         background-color: #ffffff;
         padding: 0.75rem 2rem;
@@ -14,20 +14,52 @@
     .logo-group { display: flex; align-items: center; border-right: 2px solid #e0e0e0; padding-right: 20px; margin-right: 20px; }
     .logo-group img { height: 45px; width: auto; margin-right: 15px; }
     .logo-group img:last-child { margin-right: 0; }
-    .site-name { font-size: 1.5rem; font-weight: bold; color: #333; }
+    
+    .site-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 800; /* Sangat Tebal */
+
+        /* Gradasi Horizontal: Biru Tua Resmi -> Biru Terang Teknologi */
+        background: linear-gradient(to right, #002b5c 0%, #0099ff 100%);
+
+        /* Teknik memotong background mengikuti bentuk teks */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+
+        /* Fallback warna jika gradasi tidak muncul */
+        color: #002b5c;
+
+        text-transform: uppercase;
+        margin-left: 10px; /* Jarak dari logo gambar */
+        letter-spacing: 0.5px; /* Sedikit jarak antar huruf agar tidak terlalu padat */
+    }
     .site-name-link { text-decoration: none; }
+
     .header-menu { list-style-type: none; margin: 0; padding: 0; display: flex; }
     .header-menu li { margin-left: 20px; }
+
+    /* Link Menu Utama - Rata Tengah */
     .header-menu a {
         text-decoration: none;
         color: #555;
         font-weight: 500;
         padding: 8px 12px;
         border-radius: 5px;
-        /* TRANSISI DITAMBAHKAN/DIPASTIKAN ADA */
         transition: background-color 0.3s ease, color 0.3s ease;
+
+        /* Flexbox agar teks dan ikon sejajar vertikal */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.5;
+        gap: 5px; /* Jarak antara teks dan ikon > */
     }
+
     .header-menu a:hover, .header-menu a.active { background-color: #007bff; color: #ffffff; }
+
+    /* Admin Bar */
     .admin-bar { background-color: #1a237e; color: white; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif; }
     .admin-bar .admin-info { font-weight: 600; }
     .admin-bar .admin-menu { display: flex; align-items: center; gap: 20px; }
@@ -37,27 +69,25 @@
         font-weight: 500;
         padding: 5px 10px;
         border-radius: 5px;
-        /* TRANSISI DIPERLENGKAP */
         transition: color 0.3s ease, background-color 0.3s ease;
     }
     .admin-bar .admin-menu a:hover { color: #ffab00; }
     .admin-bar .admin-menu a.active { background-color: rgba(255, 255, 255, 0.15); color: #ffab00; }
     .admin-bar .btn-logout {
         background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;
-        /* TRANSISI DIPASTIKAN ADA */
         transition: background-color 0.3s ease, color 0.3s ease;
     }
     .admin-bar .btn-logout:hover { background-color: white; color: #1a237e; }
 
-    /* -- CSS BARU UNTUK DROPDOWN (VERSI SMOOTH) -- */
+    /* -- CSS DROPDOWN -- */
     .header-menu .header-dropdown {
         position: relative;
     }
+
     .header-menu .header-dropdown .dropdown-menu-nav {
-        /* MENGGANTI 'display: none' DENGAN INI */
         opacity: 0;
         visibility: hidden;
-        transform: translateY(10px); /* Efek geser dari atas */
+        transform: translateY(10px);
         transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 
         position: absolute;
@@ -73,27 +103,50 @@
         border-radius: 5px;
     }
     .header-menu .header-dropdown:hover .dropdown-menu-nav {
-        /* MENGGANTI 'display: block' DENGAN INI */
         opacity: 1;
         visibility: visible;
-        transform: translateY(0); /* Kembali ke posisi normal */
+        transform: translateY(0);
     }
     .header-menu .header-dropdown .dropdown-menu-nav li { margin: 0; width: 100%; }
+
+    /* Link di dalam dropdown */
     .header-menu .header-dropdown .dropdown-menu-nav a {
         padding: 10px 15px;
         display: block;
         border-radius: 0;
         color: #333;
-        transition: background-color 0.3s ease, color 0.3s ease; /* Transisi untuk item di dalam dropdown */
+        transition: background-color 0.3s ease, color 0.3s ease;
+        text-align: left; /* Teks rata kiri di dalam dropdown */
     }
     .header-menu .header-dropdown .dropdown-menu-nav a:hover,
     .header-menu .header-dropdown .dropdown-menu-nav a.active {
         background-color: #007bff;
         color: #ffffff;
     }
-    /* -- AKHIR CSS DROPDOWN -- */
 
-    /* -- CSS UNTUK RESPONSIVITAS -- */
+    /* -- CSS IKON PANAH (>) YANG ANDA INGINKAN -- */
+    .dropdown-icon-mobile {
+        display: inline-block;
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 1.1em;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+        color: #555; /* Warna default abu-abu */
+    }
+
+    /* Saat menu aktif atau di-hover, warna ikon jadi putih */
+    .header-menu a.active .dropdown-icon-mobile,
+    .header-menu a:hover .dropdown-icon-mobile {
+        color: #ffffff;
+    }
+
+    /* Rotasi ikon saat hover (Desktop) */
+    .header-menu .header-dropdown:hover > a .dropdown-icon-mobile {
+        transform: rotate(90deg); /* Berputar ke bawah */
+    }
+
+    /* -- CSS RESPONSIF (MOBILE) -- */
     .mobile-menu-toggle {
         display: none;
         font-size: 1.5rem;
@@ -101,16 +154,15 @@
         background: none;
         border: none;
         cursor: pointer;
-        transition: transform 0.3s ease; /* Transisi untuk ikon */
+        transition: transform 0.3s ease;
     }
     .mobile-menu-toggle.active {
-        transform: rotate(90deg); /* Opsi: putar ikon saat aktif */
+        transform: rotate(90deg);
     }
 
     @media (max-width: 992px) {
         .header-nav { padding: 0.75rem 1rem; }
         .header-menu {
-            /* MENGGANTI 'display: none' DENGAN INI UNTUK EFEK SLIDE */
             flex-direction: column;
             position: absolute;
             top: 100%;
@@ -120,22 +172,44 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             z-index: 1000;
 
-            max-height: 0; /* Awalnya tinggi 0 */
-            overflow: hidden; /* Sembunyikan isinya */
-            transition: max-height 0.4s ease-out; /* Transisi slide */
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
         }
         .header-menu.active {
-            /* MENGGANTI 'display: flex' DENGAN INI */
-            max-height: 100vh; /* Set tinggi maksimum (cukup besar) */
-            padding: 10px 0; /* Tambahkan padding saat terbuka */
+            max-height: 100vh;
+            padding: 10px 0;
         }
         .header-menu li { margin: 0; width: 100%; }
-        .header-menu a { padding: 15px 20px; border-radius: 0; border-bottom: 1px solid #f0f0f0; display: block; }
+
+        /* Di Mobile, tombol menu utama rata kiri */
+        .header-menu a {
+            padding: 15px 20px;
+            border-radius: 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between; /* Teks di kiri, ikon di kanan */
+            width: 100%;
+        }
+
+        /* Khusus tombol dropdown di mobile */
+        .header-menu .header-dropdown > a {
+            justify-content: space-between;
+        }
+
         .mobile-menu-toggle { display: block; }
         .admin-bar { flex-direction: column; gap: 10px; padding: 0.75rem 1rem; }
         .admin-menu { flex-wrap: wrap; justify-content: center; }
 
-        /* Perbaikan Dropdown untuk Mobile (tetap sama) */
+        /* Rotasi ikon mobile saat diklik */
+        .header-menu .header-dropdown.active > a .dropdown-icon-mobile {
+            transform: rotate(90deg);
+        }
+        /* Hentikan rotasi hover di mobile */
+        .header-menu .header-dropdown:hover > a .dropdown-icon-mobile {
+            transform: rotate(0deg);
+        }
+
         .header-menu .header-dropdown { position: static; }
         .header-menu .header-dropdown .dropdown-menu-nav {
             display: block;
@@ -145,11 +219,21 @@
             border-radius: 0;
             padding-left: 20px;
             background-color: #f9f9f9;
-            /* Hapus transisi di mobile agar tidak bentrok */
+
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+
             opacity: 1;
             visibility: visible;
             transform: none;
-            transition: none;
+        }
+        .header-menu .header-dropdown.active .dropdown-menu-nav {
+            max-height: 500px;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
          .header-menu .header-dropdown .dropdown-menu-nav a { padding: 12px 20px; border-bottom: 1px solid #e9e9e9; }
          .header-menu .header-dropdown .dropdown-menu-nav li:last-child a { border-bottom: none; }
@@ -187,14 +271,19 @@
 
             <li><a href="{{ Auth::check() ? route('suadmin.regulasi.index') : route('regulasi') }}" class="{{ Request::routeIs('regulasi', 'suadmin.regulasi.*') ? 'active' : '' }}">Regulasi</a></li>
 
-            <li class="header-dropdown">
+            <li class="header-dropdown" id="dataInfraDropdown">
+                {{-- PERBAIKAN UTAMA: KELAS 'dropdown-toggle' SUDAH DIHAPUS --}}
                 <a href="javascript:void(0);"
-                   class="dropdown-toggle {{ (
+                   class="{{ (
                        Request::routeIs('datamenara', 'suadmin.datamenara.*') ||
                        Request::routeIs('databakti', 'suadmin.databakti.*') ||
                        Request::routeIs('blankspot.index', 'suadmin.blankspot.*')
                    ) ? 'active' : '' }}">
-                   Data Infrastruktur
+
+                   <span>Data Infrastruktur</span>
+
+                   {{-- IKON > YANG ANDA INGINKAN (KEMBALI LAGI) --}}
+                   <span class="dropdown-icon-mobile">&gt;</span>
                 </a>
 
                 <ul class="dropdown-menu-nav">
@@ -239,22 +328,15 @@
 </header>
 
 <script>
-    // KODE JS INI TIDAK PERLU DIUBAH SAMA SEKALI.
-    // CSS akan menangani animasi 'slide-down' secara otomatis
-    // saat kelas '.active' ditambahkan.
     document.addEventListener('DOMContentLoaded', function () {
         const toggleButton = document.getElementById('mobileMenuToggle');
         const menu = document.getElementById('headerMenu');
         const icon = toggleButton.querySelector('i');
 
         toggleButton.addEventListener('click', function () {
-            // Toggle kelas 'active' pada menu
             menu.classList.toggle('active');
-
-            // Toggle kelas 'active' pada tombol (untuk efek putar)
             toggleButton.classList.toggle('active');
 
-            // Ganti ikon hamburger menjadi 'X' dan sebaliknya
             if (menu.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
@@ -263,5 +345,17 @@
                 icon.classList.add('fa-bars');
             }
         });
+
+        const dataInfraDropdown = document.getElementById('dataInfraDropdown');
+        if (dataInfraDropdown) {
+            dataInfraDropdown.querySelector('a').addEventListener('click', function (e) {
+                const isMobile = window.getComputedStyle(toggleButton).display !== 'none';
+
+                if (isMobile) {
+                    e.preventDefault();
+                    dataInfraDropdown.classList.toggle('active');
+                }
+            });
+        }
     });
 </script>

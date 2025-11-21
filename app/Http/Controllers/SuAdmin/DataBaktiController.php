@@ -142,14 +142,12 @@ class DataBaktiController extends Controller
     {
         $query = DataBakti::query();
 
-        // Salin logika filter dan pencarian dari method index()
-        // agar PDF yang dicetak sesuai dengan yang difilter
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', '%' . $search . '%')
-                  ->orWhere('provider', 'like', '%' . $search . '%')
-                  ->orWhere('kecamatan', 'like', '%' . $search . '%');
+                $q->where('kode', 'like', "%{$search}%")
+                  ->orWhere('provider', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%");
             });
         }
         if ($request->filled('provider')) {
@@ -159,21 +157,15 @@ class DataBaktiController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        // Ambil SEMUA data yang cocok (tanpa paginasi)
         $dataBakti = $query->latest()->get();
 
-        // Memuat view PDF
         $pdf = Pdf::loadView('suadmin.databakti.pdf', compact('dataBakti'));
-        $pdf->setPaper('a4', 'landscape'); // Atur ke landscape
+        $pdf->setPaper('a4', 'landscape');
 
         $fileName = 'data-bakti-' . date('Y-m-d') . '.pdf';
         return $pdf->download($fileName);
     }
 
-    // --- (FUNGSI BARU SAYA TAMBAHKAN DI SINI) ---
-    /**
-     * Mengimpor data dari file Excel.
-     */
     public function import(Request $request)
     {
         $request->validate([
@@ -181,23 +173,40 @@ class DataBaktiController extends Controller
         ]);
 
         try {
-            // PENTING: Kode ini membutuhkan sebuah class Import baru
-            // yang bernama 'App\Imports\DataBaktiImport'
-            // Jika class itu belum ada, kita harus membuatnya.
-
             $importClass = '\App\Imports\DataBaktiImport';
 
             if (!class_exists($importClass)) {
                 return redirect()->back()->with('error', 'Gagal: Fitur import belum siap. Class <strong>' . $importClass . '</strong> tidak ditemukan.');
             }
 
-            Excel::import(new $importClass, $request->file('file_excel'));
+            $import = new $importClass;
+
+            Excel::import($import, $request->file('file_excel'));
+
+            if (method_exists($import, 'failures')) {
+                $failures = $import->failures();
+
+                if ($failures->isNotEmpty()) {
+                    $errorMessage = "Gagal mengimpor sebagian data. Ada " . count($failures) . " baris yang bermasalah:<br>";
+                    foreach ($failures as $failure) {
+                        $errorMessage .= "- Baris " . $failure->row() . ": " . implode(", ", $failure->errors()) . "<br>";
+                    }
+                    return redirect()->route('suadmin.databakti.index')->with('error', $errorMessage);
+                }
+            }
 
             return redirect()->route('suadmin.databakti.index')->with('success', 'Data Bakti berhasil diimpor.');
 
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             $failures = $e->failures();
+             $errorMessage = "Gagal validasi data Excel:<br>";
+             foreach ($failures as $failure) {
+                 $errorMessage .= "- Baris " . $failure->row() . ": " . implode(", ", $failure->errors()) . "<br>";
+             }
+             return redirect()->route('suadmin.databakti.index')->with('error', $errorMessage);
+
         } catch (Exception $e) {
-            // Tangkap semua jenis error (misal: file salah format)
-            return redirect()->route('suadmin.databakti.index')->with('error', 'Gagal mengimpor data. Pastikan format file benar. Error: ' . $e->getMessage());
+            return redirect()->route('suadmin.databakti.index')->with('error', 'Gagal mengimpor data. Error: ' . $e->getMessage());
         }
     }
 }

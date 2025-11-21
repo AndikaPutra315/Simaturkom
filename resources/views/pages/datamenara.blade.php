@@ -240,7 +240,7 @@
                                 <tr>
                                     <td>{{ $menara->provider }}</td>
                                     <td>{{ $menara->kelurahan }}</td>
-                                    <td>{{ $menara->kecamatan }}</td>g5
+                                    <td>{{ $menara->kecamatan }}</td>
                                     <td>{{ $menara->alamat }}</td>
                                     <td>{{ $menara->longitude }}</td>
                                     <td>{{ $menara->latitude }}</td>
