@@ -18,12 +18,12 @@ class DataBaktiController extends Controller
     {
         $query = DataBakti::query();
 
-        // Logika Pencarian
+        // Logika Pencarian (KODE DIHAPUS)
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', '%' . $search . '%')
-                  ->orWhere('provider', 'like', '%' . $search . '%')
+                // Pencarian kode dihapus
+                $q->where('provider', 'like', '%' . $search . '%') // Provider sekarang dianggap sebagai "Nama"
                   ->orWhere('kecamatan', 'like', '%' . $search . '%');
             });
         }
@@ -62,8 +62,7 @@ class DataBaktiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // Validasi disesuaikan dengan skema baru
-            'kode' => 'nullable|string|max:255|unique:data_bakti,kode',
+            // Validasi KODE DIHAPUS
             'provider' => 'required|string|max:255',
             'kelurahan' => 'nullable|string|max:255',
             'kecamatan' => 'nullable|string|max:255',
@@ -107,8 +106,7 @@ class DataBaktiController extends Controller
         $dataBakti = DataBakti::findOrFail($id); // Cari data secara manual
 
         $validated = $request->validate([
-            // Validasi update, abaikan unique untuk kode milik sendiri
-            'kode' => 'nullable|string|max:255|unique:data_bakti,kode,' . $dataBakti->id,
+            // Validasi KODE DIHAPUS
             'provider' => 'required|string|max:255',
             'kelurahan' => 'nullable|string|max:255',
             'kecamatan' => 'nullable|string|max:255',
@@ -145,8 +143,8 @@ class DataBaktiController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', "%{$search}%")
-                  ->orWhere('provider', 'like', "%{$search}%")
+                // Pencarian KODE DIHAPUS
+                $q->where('provider', 'like', "%{$search}%")
                   ->orWhere('kecamatan', 'like', "%{$search}%");
             });
         }

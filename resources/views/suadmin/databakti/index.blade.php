@@ -123,8 +123,7 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Kode</th>
-                                <th>Provider (Nama)</th>
+                                <th>Nama</th>
                                 <th>Kelurahan</th>
                                 <th>Kecamatan</th>
                                 <th>Alamat</th>
@@ -138,7 +137,6 @@
                         <tbody>
                             @forelse ($dataBakti as $item)
                                 <tr>
-                                    <td>{{ $item->kode ?? '-' }}</td>
                                     <td>{{ $item->provider ?? '-' }}</td>
                                     <td>{{ $item->kelurahan ?? '-' }}</td>
                                     <td>{{ $item->kecamatan ?? '-' }}</td>
@@ -180,7 +178,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                Apakah Anda yakin ingin menghapus Data Bakti dengan kode <strong>{{ $item->kode }}</strong> (Provider: {{ $item->provider }})?
+                                                Apakah Anda yakin ingin menghapus Data Bakti dengan nama <strong>{{ $item->kode }}</strong> (Provider: {{ $item->provider }})?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -234,7 +232,7 @@
                         </div>
 
                         <p class="mb-1"><small>Urutan kolom yang benar:</small></p>
-                        <small><code>Kode</code>, <code>Provider</code>, <code>Kelurahan</code>, <code>Kecamatan</code>, <code>Alamat</code>, <code>Longitude</code>, <code>Latitude</code>, <code>Status</code>, <code>Tinggi Tower</code></small>
+                        <small><code>Nama</code>, <code>Kelurahan</code>, <code>Kecamatan</code>, <code>Alamat</code>, <code>Longitude</code>, <code>Latitude</code>, <code>Status</code>, <code>Tinggi Tower</code></small>
 
                         <hr>
 

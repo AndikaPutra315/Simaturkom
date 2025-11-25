@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Data Menara - Admin</title>
+    <title>Tambah Data Menara BTS - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
     <main class="container py-5">
         <div class="card fade-in-up">
             <div class="card-header bg-white py-3 form-card-header">
-                <span class="title mb-0">Tambah Data Menara Baru</span>
+                <span class="title mb-0">Tambah Data Menara BTS Baru</span>
             </div>
             <div class="card-body p-4 p-lg-5">
                 <form action="{{ route('suadmin.datamenara.store') }}" method="POST">
@@ -26,7 +26,9 @@
                         <h5 class="mb-0">Informasi Dasar</h5>
                         <div class="col-md-6">
                             <label for="kode" class="form-label fw-bold">Kode</label>
-                            <input type="text" class="form-control @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ old('kode') }}" required>
+                            {{-- HAPUS 'required' DARI INPUT INI --}}
+                            <input type="text" class="form-control @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ old('kode') }}" placeholder="Opsional">
+                            <div class="form-text">Boleh dikosongkan jika tidak ada.</div>
                             @error('kode')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">

@@ -12,8 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
+            // SESUAI GAMBAR: Gunakan IsAdminMiddleware karena nama filenya begitu
             'is_admin' => \App\Http\Middleware\IsAdminMiddleware::class,
+
+            // Ini middleware baru untuk Super Admin
+            'is_superadmin' => \App\Http\Middleware\IsSuperAdmin::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withExceptions(function (Exceptions $exceptions){
     })->create();

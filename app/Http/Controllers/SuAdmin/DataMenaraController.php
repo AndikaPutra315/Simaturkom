@@ -9,7 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\DataMenaraImport;
 use Maatwebsite\Excel\Validators\ValidationException;
-use Illuminate\Validation\Rule; // Import ini tetap diperlukan
+use Illuminate\Validation\Rule;
 
 class DataMenaraController extends Controller
 {
@@ -20,7 +20,6 @@ class DataMenaraController extends Controller
     {
         $query = DataMenara::query();
 
-        // Logika filter yang sudah ada
         if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
@@ -28,7 +27,6 @@ class DataMenaraController extends Controller
             $query->where('kecamatan', $request->kecamatan);
         }
 
-        // Logika untuk menangani input pencarian
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -47,9 +45,6 @@ class DataMenaraController extends Controller
         return view('suadmin.datamenara.index', compact('menara', 'providers', 'kecamatans'));
     }
 
-    /**
-     * Menampilkan form untuk membuat data menara baru.
-     */
     public function create()
     {
         return view('suadmin.datamenara.create');
@@ -60,8 +55,7 @@ class DataMenaraController extends Controller
      */
     public function store(Request $request)
     {
-        // --- PERBAIKAN LOGIKA VALIDASI ---
-        // 1. Definisikan aturan dasar
+        // --- VALIDASI BERSIH (KODE BOLEH KOSONG) ---
         $rules = [
             'provider' => 'required|string|max:255',
             'kelurahan' => 'required|string|max:255',
@@ -73,30 +67,24 @@ class DataMenaraController extends Controller
             'tinggi_tower' => 'required|integer',
         ];
 
-        // 2. Definisikan aturan untuk 'kode' secara terpisah
-        $kodeRules = ['required', 'string', 'max:255'];
+        // Kode boleh kosong (nullable)
+        $kodeRules = ['nullable', 'string', 'max:255'];
 
-        // 3. Tambahkan aturan 'unique' HANYA JIKA kodenya BUKAN "-"
-        if ($request->input('kode') !== '-') {
+        // Cek unique hanya jika user mengisi kode (dan bukan "-")
+        if ($request->filled('kode') && $request->input('kode') !== '-') {
             $kodeRules[] = Rule::unique('data_menara');
         }
-
-        // 4. Gabungkan aturan 'kode' ke dalam aturan utama
         $rules['kode'] = $kodeRules;
 
-        // 5. Jalankan validasi
         $request->validate($rules);
-        // --- AKHIR PERBAIKAN ---
 
+        // SIMPAN DATA (Tanpa manipulasi kode acak, NULL masuk sebagai NULL)
         DataMenara::create($request->all());
 
         return redirect()->route('suadmin.datamenara.index')
                          ->with('success', 'Data menara baru berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan form untuk mengedit data menara.
-     */
     public function edit(DataMenara $datamenara)
     {
         return view('suadmin.datamenara.edit', compact('datamenara'));
@@ -107,7 +95,7 @@ class DataMenaraController extends Controller
      */
     public function update(Request $request, DataMenara $datamenara)
     {
-        // --- PERBAIKAN LOGIKA VALIDASI ---
+        // --- VALIDASI BERSIH (KODE BOLEH KOSONG) ---
         $rules = [
             'provider' => 'required|string|max:255',
             'kelurahan' => 'required|string|max:255',
@@ -119,26 +107,23 @@ class DataMenaraController extends Controller
             'tinggi_tower' => 'required|integer',
         ];
 
-        $kodeRules = ['required', 'string', 'max:255'];
+        $kodeRules = ['nullable', 'string', 'max:255'];
 
-        // Tambahkan aturan 'unique' HANYA JIKA kodenya BUKAN "-"
-        if ($request->input('kode') !== '-') {
+        // Cek unique hanya jika user mengisi kode (dan bukan "-")
+        if ($request->filled('kode') && $request->input('kode') !== '-') {
             $kodeRules[] = Rule::unique('data_menara')->ignore($datamenara->id);
         }
-
         $rules['kode'] = $kodeRules;
-        $request->validate($rules);
-        // --- AKHIR PERBAIKAN ---
 
+        $request->validate($rules);
+
+        // UPDATE DATA (Tanpa manipulasi kode acak)
         $datamenara->update($request->all());
 
         return redirect()->route('suadmin.datamenara.index')
                          ->with('success', 'Data menara berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus data menara dari database.
-     */
     public function destroy(DataMenara $datamenara)
     {
         $datamenara->delete();
@@ -146,9 +131,6 @@ class DataMenaraController extends Controller
                          ->with('success', 'Data menara berhasil dihapus.');
     }
 
-    /**
-     * Generate PDF
-     */
     public function generatePDF(Request $request)
     {
         $query = DataMenara::query();
@@ -175,9 +157,6 @@ class DataMenaraController extends Controller
         return $pdf->stream('laporan-data-menara.pdf');
     }
 
-    /**
-     * DITAMBAHKAN: Metode baru untuk menangani import Excel.
-     */
     public function importExcel(Request $request)
     {
         $request->validate([

@@ -91,7 +91,7 @@ Route::middleware(['is_admin'])->prefix('suadmin')->name('suadmin.')->group(func
 
 
     // --- Users ---
-    Route::resource('users', UserManagementController::class);
+    Route::resource('users', UserManagementController::class)->middleware('is_superadmin');
 
 
     // --- Blankspot (Dari Kode Teman Anda) ---

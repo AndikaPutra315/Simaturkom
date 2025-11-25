@@ -15,30 +15,24 @@ class DataBaktiImport implements ToModel, WithStartRow, WithValidation, SkipsOnF
 
     /**
      * Fungsi ini berjalan SEBELUM Validasi.
-     * 1. Mengubah string kosong "" menjadi NULL.
-     * 2. Mengubah format DMS (1°45'37.61"S) menjadi Desimal (-1.760447).
+     * Mengubah format DMS menjadi Desimal.
      */
     public function prepareForValidation($data, $index)
     {
-        // 1. Handle Kode Kosong (seperti sebelumnya)
-        if (empty($data['0']) || trim($data['0']) === '') {
-            $data['0'] = null;
+        // 1. Handle Konversi Longitude (Sekarang Index 4)
+        if (!empty($data['4'])) {
+            $data['4'] = $this->convertDMSToDecimal($data['4']);
         }
 
-        // 2. Handle Konversi Longitude (Kolom 5)
+        // 2. Handle Konversi Latitude (Sekarang Index 5)
         if (!empty($data['5'])) {
             $data['5'] = $this->convertDMSToDecimal($data['5']);
         }
 
-        // 3. Handle Konversi Latitude (Kolom 6)
-        if (!empty($data['6'])) {
-            $data['6'] = $this->convertDMSToDecimal($data['6']);
-        }
-
-        // 4. Handle Tinggi Tower (Kolom 8)
+        // 3. Handle Tinggi Tower (Sekarang Index 7)
         // Bersihkan jika ada teks " meter" atau "m"
-        if (!empty($data['8'])) {
-             $data['8'] = (int) filter_var($data['8'], FILTER_SANITIZE_NUMBER_INT);
+        if (!empty($data['7'])) {
+             $data['7'] = (int) filter_var($data['7'], FILTER_SANITIZE_NUMBER_INT);
         }
 
         return $data;
@@ -57,7 +51,6 @@ class DataBaktiImport implements ToModel, WithStartRow, WithValidation, SkipsOnF
         $coordinate = trim($coordinate);
 
         // Regex untuk menangkap format: 1°45'37.61"S
-        // Grup 1: Derajat, Grup 2: Menit, Grup 3: Detik, Grup 4: Arah (S/N/E/W)
         if (preg_match('/(\d+)°(\d+)\'([\d.]+)"([NSEW])/i', $coordinate, $matches)) {
             $degrees = (float) $matches[1];
             $minutes = (float) $matches[2];
@@ -75,7 +68,6 @@ class DataBaktiImport implements ToModel, WithStartRow, WithValidation, SkipsOnF
             return $decimal;
         }
 
-        // Jika format tidak dikenali, kembalikan null (nanti akan ditolak validasi)
         return null;
     }
 
@@ -89,15 +81,15 @@ class DataBaktiImport implements ToModel, WithStartRow, WithValidation, SkipsOnF
         }
 
         return new DataBakti([
-            'kode'          => (empty($row[0]) || trim($row[0]) === '') ? null : $row[0],
-            'provider'      => $row[1],
-            'kelurahan'     => $row[2],
-            'kecamatan'     => $row[3],
-            'alamat'        => $row[4] ?? null,
-            'longitude'     => isset($row[5]) ? (float) $row[5] : null,
-            'latitude'      => isset($row[6]) ? (float) $row[6] : null,
-            'status'        => $row[7] ?? null,
-            'tinggi_tower'  => isset($row[8]) ? (int) $row[8] : null,
+            // Kode dihapus
+            'provider'      => $row[0],          // Index 0 (Dulunya 1)
+            'kelurahan'     => $row[1],          // Index 1
+            'kecamatan'     => $row[2],          // Index 2
+            'alamat'        => $row[3] ?? null,  // Index 3
+            'longitude'     => isset($row[4]) ? (float) $row[4] : null, // Index 4
+            'latitude'      => isset($row[5]) ? (float) $row[5] : null, // Index 5
+            'status'        => $row[6] ?? null,  // Index 6
+            'tinggi_tower'  => isset($row[7]) ? (int) $row[7] : null,   // Index 7
         ]);
     }
 
@@ -109,25 +101,31 @@ class DataBaktiImport implements ToModel, WithStartRow, WithValidation, SkipsOnF
     public function rules(): array
     {
         return [
-            '1' => ['required', 'string', 'max:255'],
-            '0' => ['nullable', 'string', 'max:255', 'unique:data_bakti,kode'],
-            // Tetap gunakan 'numeric' karena data sudah dikonversi jadi angka di prepareForValidation
+            // Provider/Nama (Index 0) wajib diisi
+            '0' => ['required', 'string', 'max:255'],
+
+            // Validasi Kode DIHAPUS
+
+            // Longitude (Index 4)
+            '4' => ['nullable', 'numeric'],
+
+            // Latitude (Index 5)
             '5' => ['nullable', 'numeric'],
-            '6' => ['nullable', 'numeric'],
-            '8' => ['nullable', 'integer'],
+
+            // Tinggi (Index 7)
+            '7' => ['nullable', 'integer'],
         ];
     }
 
     public function customValidationAttributes()
     {
         return [
-            '0' => 'Kode',
-            '1' => 'Provider (Nama)',
-            '2' => 'Kelurahan',
-            '3' => 'Kecamatan',
-            '5' => 'Longitude',
-            '6' => 'Latitude',
-            '8' => 'Tinggi Tower',
+            '0' => 'Nama (Provider)',
+            '1' => 'Kelurahan',
+            '2' => 'Kecamatan',
+            '4' => 'Longitude',
+            '5' => 'Latitude',
+            '7' => 'Tinggi Tower',
         ];
     }
 }

@@ -111,17 +111,17 @@ class HomeController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', "%{$search}%")
-                  ->orWhere('provider', 'like', "%{$search}%") // <-- KEMBALI MENGGUNAKAN 'provider'
-                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                // Pencarian KODE DIHAPUS
+                $q->where('provider', 'like', "%{$search}%")
                   ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
                   ->orWhere('alamat', 'like', "%{$search}%");
             });
         }
 
         // Logika filter
-        if ($request->filled('provider')) { // <-- KEMBALI MENGGUNAKAN 'provider'
-            $query->where('provider', $request->provider); // <-- KEMBALI MENGGUNAKAN 'provider'
+        if ($request->filled('provider')) {
+            $query->where('provider', $request->provider);
         }
         if ($request->filled('kecamatan')) {
             $query->where('kecamatan', $request->kecamatan);
@@ -131,7 +131,7 @@ class HomeController extends Controller
         $dataBakti = $query->latest()->paginate(10)->withQueryString();
 
         // Ambil data filter dari kolom 'provider'
-        $providers = DataBakti::select('provider')->distinct()->orderBy('provider')->get(); // <-- KEMBALI MENGGUNAKAN 'provider'
+        $providers = DataBakti::select('provider')->distinct()->orderBy('provider')->get();
         $kecamatans = DataBakti::select('kecamatan')->distinct()->orderBy('kecamatan')->get();
 
         // Mengarahkan ke view publik 'pages.databakti'
@@ -252,7 +252,7 @@ class HomeController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                // Jangan cari 'kode' karena itu rahasia
+                // Pencarian KODE DIHAPUS
                 $q->where('provider', 'like', "%{$search}%")
                   ->orWhere('kecamatan', 'like', "%{$search}%");
             });

@@ -17,8 +17,7 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode</th>
-                <th>Provider (Nama)</th>
+                <th>Nama</th>
                 <th>Kecamatan</th>
                 <th>Alamat</th>
                 <th>Koordinat</th>

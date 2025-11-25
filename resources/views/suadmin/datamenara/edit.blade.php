@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data Menara - Admin</title>
+    <title>Edit Data Menara BTS - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
             {{-- Tambahkan kelas "form-card-header" di sini --}}
             <div class="card-header bg-white py-3 form-card-header">
                 {{-- Ganti <h3> dengan <span> agar lebih fleksibel --}}
-                <span class="title mb-0">Edit Data Menara: {{ $datamenara->kode }}</span>
+                <span class="title mb-0">Edit Data Menara BTS: {{ $datamenara->kode }}</span>
             </div>
             <div class="card-body p-4 p-lg-5">
                 <form action="{{ route('suadmin.datamenara.update', $datamenara->id) }}" method="POST">

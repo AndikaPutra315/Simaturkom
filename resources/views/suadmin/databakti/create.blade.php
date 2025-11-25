@@ -86,15 +86,8 @@
                         <div class="row g-4">
                             {{-- Kolom Provider (Nama) --}}
                             <div class="col-md-6">
-                                <label for="provider" class="form-label">Provider (Nama) <span class="text-danger">*</span></label>
+                                <label for="provider" class="form-label">Nama <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="provider" name="provider" value="{{ old('provider') }}" required>
-                            </div>
-
-                            {{-- Kolom Kode --}}
-                            <div class="col-md-6">
-                                <label for="kode" class="form-label">Kode</label>
-                                <input type="text" class="form-control" id="kode" name="kode" value="{{ old('kode') }}">
-                                <div class="form-text">Boleh dikosongi jika tidak ada.</div>
                             </div>
 
                             {{-- Kolom Kecamatan --}}

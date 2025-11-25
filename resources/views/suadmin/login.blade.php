@@ -13,8 +13,18 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #eef2f9;
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* Fallback color jika gambar gagal muat */
+            background-color: #333;
+
+            /* Background Image dengan Overlay Gelap Transparan (0.4) agar tulisan terbaca */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{{ asset('images/monumen.jpeg') }}");
+
+            /* Pengaturan agar gambar full screen dan responsif */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -29,13 +39,16 @@
             display: block;
             margin: 0 auto 30px auto;
             height: 60px;
+            /* Opsional: Beri drop shadow pada logo agar kontras dengan background foto */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         .login-card {
             border: none;
             border-radius: 1rem;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 1rem 3rem rgba(0,0,0,.1)!important;
+            /* Membuat kartu putih transparan agar background monumen terlihat samar */
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px); /* Efek blur di belakang kartu */
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.2)!important;
         }
         .login-card .card-title {
             font-weight: 700;
@@ -46,10 +59,17 @@
             border-color: #1a237e;
             padding: 0.75rem;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
         .btn-login:hover {
             background-color: #151c68;
             border-color: #151c68;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        /* Style tambahan untuk input agar lebih jelas di atas backdrop */
+        .form-floating > .form-control {
+            background-color: rgba(255, 255, 255, 0.9);
         }
     </style>
 </head>
@@ -59,7 +79,7 @@
 
         <div class="card login-card">
             <div class="card-body p-4 p-sm-5">
-                <h5 class="card-title text-center mb-4">Super Admin Login</h5>
+                <h5 class="card-title text-center mb-4">Login</h5>
 
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
